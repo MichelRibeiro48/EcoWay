@@ -1,0 +1,2 @@
+export const TextDesc =
+  "Bem-vindo ao EcoWay! Aqui você pode encontrar facilmente os pontos de coleta seletiva disponíveis em sua cidade, permitindo que você recicle seus resíduos corretamente e contribua para a proteção do meio ambiente. \n\nCom o nosso aplicativo, você pode visualizar um mapa interativo com todos os pontos de coleta seletiva em sua área, além de informações detalhadas sobre cada um deles, como o tipo de material que é coletado e os horários de funcionamento.";
