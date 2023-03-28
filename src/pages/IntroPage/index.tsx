@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import BackgroundSvg from "../../assets/background.svg";
 import { useFonts, Fasthand_400Regular } from "@expo-google-fonts/fasthand";
 import { TextDesc } from "./TextDesc";
-export default function IntroPage() {
+export default function IntroPage({ navigation }) {
   const [fontsLoaded] = useFonts({
     Fasthand_400Regular,
   });
@@ -15,7 +15,7 @@ export default function IntroPage() {
     <View className="flex-1 items-center bg-Green">
       <BackgroundSvg width={"100%"} height={380} />
       <Text
-        className="text-White text-7xl pt-6 text-Title"
+        className="text-White text-7xl pt-6"
         style={{ fontFamily: "Fasthand_400Regular" }}
       >
         EcoWay
@@ -24,6 +24,7 @@ export default function IntroPage() {
       <TouchableOpacity
         className="mt-12 bg-Title w-10/12 h-12 px-6 items-center justify-center rounded-xl"
         style={{ elevation: 20 }}
+        onPress={() => navigation.navigate("HomePage")}
       >
         <Text>Começar agora</Text>
       </TouchableOpacity>
