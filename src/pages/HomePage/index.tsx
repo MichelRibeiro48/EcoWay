@@ -88,6 +88,7 @@ export default function HomePage({ navigation }) {
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
             <TouchableOpacity
+              onPress={() => navigation.navigate("ReportPage", item)}
               className={classNames(
                 `w-56 h-full bg-White ml-4 justify-center border-Red border-b-4 flex-row items-center rounded-xl`,
                 {

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Platform } from "react-native";
 import BackgroundSvg from "../../assets/background.svg";
 import { useFonts, Fasthand_400Regular } from "@expo-google-fonts/fasthand";
 import { TextDesc } from "./TextDesc";
@@ -23,7 +23,11 @@ export default function IntroPage({ navigation }) {
       <Text className="px-6 text-White">{TextDesc}</Text>
       <TouchableOpacity
         className="mt-12 bg-Title w-10/12 h-12 px-6 items-center justify-center rounded-xl"
-        style={{ elevation: 20 }}
+        style={
+          Platform.OS === "android"
+            ? { elevation: 20 }
+            : { shadowOffset: { width: 1, height: 1 }, shadowOpacity: 0.3 }
+        }
         onPress={() => navigation.navigate("HomePage")}
       >
         <Text>Começar agora</Text>
