@@ -15,7 +15,7 @@ import IconH from "@expo/vector-icons/FontAwesome5";
 import MarkerList from "./mockMarker";
 import classNames from "classnames";
 
-export default function HomePage() {
+export default function HomePage({ navigation }) {
   const [location, setLocation] = useState<LocationObject | null>(null);
   const mapRef = useRef(null);
   let initialLocation = {
@@ -67,7 +67,7 @@ export default function HomePage() {
                 key={index}
                 coordinate={marker.coordinate}
                 image={require("../../assets/markerOff.png")}
-                onPress={() => console.log(marker.title)}
+                onPress={() => navigation.navigate("ReportPage", marker)}
               />
             );
           })}
@@ -87,7 +87,7 @@ export default function HomePage() {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <View
+            <TouchableOpacity
               className={classNames(
                 `w-56 h-full bg-White ml-4 justify-center border-Red border-b-4 flex-row items-center rounded-xl`,
                 {
@@ -106,7 +106,7 @@ export default function HomePage() {
               >
                 {item.title}
               </Text>
-            </View>
+            </TouchableOpacity>
           )}
         />
       </View>

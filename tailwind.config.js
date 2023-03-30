@@ -8,6 +8,8 @@ module.exports = {
       Title: "#FEF9E0",
       Red: "#E13D3D",
       Yellow: "#E1B33D",
+      Grey: "#777777",
+      Black: "#0C0C0C",
     },
     extend: {},
   },
