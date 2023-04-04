@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import HomePage from "../pages/HomePage";
 import IntroPage from "../pages/IntroPage";
+import PointAbout from "../pages/PointAbout";
 import ReportPage from "../pages/ReportPage";
 
 const Stack = createNativeStackNavigator();
@@ -12,6 +13,7 @@ export default function Routes() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="IntroPage" component={IntroPage} />
         <Stack.Screen name="HomePage" component={HomePage} />
+        <Stack.Screen name="PointAbout" component={PointAbout} />
         <Stack.Screen name="ReportPage" component={ReportPage} />
       </Stack.Navigator>
     </NavigationContainer>

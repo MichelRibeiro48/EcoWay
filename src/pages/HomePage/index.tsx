@@ -67,7 +67,7 @@ export default function HomePage({ navigation }) {
                 key={index}
                 coordinate={marker.coordinate}
                 image={require("../../assets/markerOff.png")}
-                onPress={() => navigation.navigate("ReportPage", marker)}
+                onPress={() => navigation.navigate("PointAbout", marker)}
               />
             );
           })}
@@ -88,7 +88,7 @@ export default function HomePage({ navigation }) {
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => navigation.navigate("ReportPage", item)}
+              onPress={() => navigation.navigate("PointAbout", item)}
               className={classNames(
                 `w-56 h-full bg-White ml-4 justify-center border-Red border-b-4 flex-row items-center rounded-xl`,
                 {
