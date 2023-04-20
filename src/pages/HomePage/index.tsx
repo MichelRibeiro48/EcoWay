@@ -1,19 +1,30 @@
-import {
-  requestForegroundPermissionsAsync,
-  getCurrentPositionAsync,
-} from "expo-location";
-import { LocationObject } from "expo-location/build/Location.types";
 import React, { useEffect, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Platform,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import {
   useFonts,
   Roboto_100Thin_Italic,
   Roboto_500Medium,
+  Roboto_400Regular,
+  Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
-import { Text, View, Image, TouchableOpacity, FlatList } from "react-native";
-import MapView, { Marker } from "react-native-maps";
-import IconH from "@expo/vector-icons/FontAwesome5";
-import MarkerList from "./mockMarker";
-import classNames from "classnames";
+import {
+  LocationObject,
+  getCurrentPositionAsync,
+  requestForegroundPermissionsAsync,
+} from "expo-location";
+import MapExample from "../../assets/mapExample.svg";
+import LogoHomeSvg from "../../assets/logohome.svg";
+import TipsList from "./mockTips";
+import styles from "./styles";
 
 export default function HomePage({ navigation }) {
   const [location, setLocation] = useState<LocationObject | null>(null);
@@ -43,80 +54,102 @@ export default function HomePage({ navigation }) {
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
+    Roboto_400Regular,
+    Roboto_700Bold,
   });
 
   if (!fontsLoaded) {
     return;
   }
   return (
-    <View>
-      {location && (
-        <MapView
-          ref={mapRef}
-          className="w-full h-full flex-col justify-end"
-          initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-          }}
+    <ScrollView className="bg-Green">
+      <View className="bg-Green">
+        <LogoHomeSvg width={"100%"} height={280} />
+      </View>
+      <View className="items-center py-6 px-5 bg-White border-t-2 border-Green rounded-t-3xl">
+        <TouchableOpacity
+          style={[
+            Platform.OS === "android" ? { elevation: 10 } : styles.IosShadow,
+          ]}
+          className="w-full h-40 rounded-t-2xl"
+          onPress={() => navigation.navigate("MapPage")}
         >
-          {MarkerList.map((marker, index) => {
-            return (
-              <Marker
-                key={index}
-                coordinate={marker.coordinate}
-                image={require("../../assets/markerOff.png")}
-                onPress={() => navigation.navigate("PointAbout", marker)}
-              />
-            );
-          })}
-          <Marker
-            coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            }}
-            image={require("../../assets/gps.png")}
-            onPress={() => console.log("teste")}
+          <Image
+            source={require("../../assets/mapExample.png")}
+            className="w-full rounded-t-2xl"
           />
-        </MapView>
-      )}
-      <View className="absolute bottom-24 h-20">
-        <FlatList
-          data={MarkerList}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate("PointAbout", item)}
-              className={classNames(
-                `w-56 h-full bg-White ml-4 justify-center border-Red border-b-4 flex-row items-center rounded-xl`,
-                {
-                  "border-Red": item.numberReported > 8,
-                  "border-Yellow":
-                    item.numberReported >= 5 && item.numberReported <= 8,
-                  "border-Green": item.numberReported < 5,
-                }
-              )}
+          <View
+            className="bg-Green w-full h-14 items-center justify-center rounded-b-lg"
+            style={[
+              Platform.OS === "android"
+                ? styles.AndroidShadow
+                : styles.IosShadow,
+            ]}
+          >
+            <Text
+              className="text-White text-base"
+              style={{ fontFamily: "Roboto_700Bold" }}
             >
-              <Image source={item.image} className="w-10 h-12" />
-              <Text
-                numberOfLines={1}
-                className="w-40 text-xl"
-                style={{ fontFamily: "Roboto_100Thin_Italic" }}
-              >
-                {item.title}
-              </Text>
-            </TouchableOpacity>
+              Encontre os locais de coleta seletiva!
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <Text
+          className="m-8 text-Green text-lg"
+          style={{ fontFamily: "Roboto_700Bold" }}
+        >
+          Dicas de reciclagem
+        </Text>
+        <FlatList
+          data={TipsList.slice(0, 2)}
+          renderItem={({ item }) => (
+            <View
+              className="w-80 mb-8 rounded-b-lg h-80"
+              style={[
+                Platform.OS === "android"
+                  ? styles.AndroidShadow
+                  : styles.IosShadow,
+              ]}
+            >
+              <Image
+                source={item.image}
+                className="w-80 h-36 mb-2 self-center rounded-b-xl"
+              />
+              <View className="ml-2 pr-7 pl-2">
+                <Text
+                  className="text-xs text-Grey"
+                  style={{ fontFamily: "Roboto_400Regular" }}
+                >
+                  Há 17 minutos.
+                </Text>
+                <Text
+                  className="text-lg"
+                  style={{ fontFamily: "Roboto_500Medium" }}
+                >
+                  {item.title}
+                </Text>
+                <Text
+                  numberOfLines={3}
+                  className="text-lg"
+                  style={{ fontFamily: "Roboto_400Regular" }}
+                >
+                  {item.description}
+                </Text>
+              </View>
+            </View>
           )}
         />
+        <TouchableOpacity
+          onPress={() => navigation.navigate("TipsRecyclePage")}
+        >
+          <Text
+            className="mb-8 text-Green text-base"
+            style={{ fontFamily: "Roboto_500Medium," }}
+          >
+            Ver mais!
+          </Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        className="w-16 h-12 bg-Green mb-8 items-center justify-center self-center rounded-lg mt-7 absolute bottom-0"
-        onPress={() => goToInitialLocation()}
-      >
-        <IconH name="crosshairs" size={32} color={"#fff"} />
-      </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
