@@ -144,7 +144,7 @@ export default function HomePage({ navigation }) {
         >
           <Text
             className="mb-8 text-Green text-base"
-            style={{ fontFamily: "Roboto_500Medium," }}
+            style={{ fontFamily: "Roboto_500Medium" }}
           >
             Ver mais!
           </Text>
