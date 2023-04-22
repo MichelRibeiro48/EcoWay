@@ -7,6 +7,7 @@ import PointAbout from "../pages/PointAbout";
 import ReportPage from "../pages/ReportPage";
 import HomePage from "../pages/HomePage";
 import TipsRecyclePage from "../pages/TipsRecyclePage";
+import PostPage from "../pages/PostPage";
 
 const Stack = createNativeStackNavigator();
 export default function Routes() {
@@ -19,6 +20,7 @@ export default function Routes() {
         <Stack.Screen name="PointAbout" component={PointAbout} />
         <Stack.Screen name="ReportPage" component={ReportPage} />
         <Stack.Screen name="TipsRecyclePage" component={TipsRecyclePage} />
+        <Stack.Screen name="PostPage" component={PostPage} />
       </Stack.Navigator>
     </NavigationContainer>
   );

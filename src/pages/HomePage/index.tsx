@@ -8,6 +8,7 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import {
   useFonts,
@@ -103,7 +104,8 @@ export default function HomePage({ navigation }) {
         <FlatList
           data={TipsList.slice(0, 2)}
           renderItem={({ item }) => (
-            <View
+            <Pressable
+              onPress={() => navigation.navigate("PostPage", { item })}
               className="w-80 mb-8 rounded-b-lg h-80"
               style={[
                 Platform.OS === "android"
@@ -112,7 +114,7 @@ export default function HomePage({ navigation }) {
               ]}
             >
               <Image
-                source={item.image}
+                source={item.imageBanner}
                 className="w-80 h-36 mb-2 self-center rounded-b-xl"
               />
               <View className="ml-2 pr-7 pl-2">
@@ -136,7 +138,7 @@ export default function HomePage({ navigation }) {
                   {item.description}
                 </Text>
               </View>
-            </View>
+            </Pressable>
           )}
         />
         <TouchableOpacity
