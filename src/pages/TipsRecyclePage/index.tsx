@@ -53,7 +53,7 @@ export default function TipsRecyclePage({ navigation }) {
             ]}
           >
             <Image
-              source={item.image}
+              source={item.imageBanner}
               className="w-80 h-36 mb-2 self-center rounded-b-xl"
             />
             <View className="ml-2 pr-7 pl-2">
