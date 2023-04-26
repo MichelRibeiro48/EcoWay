@@ -124,7 +124,7 @@ export default function ReportPage({ navigation, route }) {
         )}
         <View className="flex-row justify-between mt-auto">
           <TouchableOpacity
-            className="mt-4 w-28 h-12 bg-Green self-center items-center justify-center rounded-lg"
+            className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg"
             onPress={() => navigation.goBack()}
           >
             <IconC name="close" size={32} color={"white"} />
