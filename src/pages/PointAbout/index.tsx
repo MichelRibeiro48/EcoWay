@@ -131,15 +131,15 @@ export default function PointAbout({ navigation, route }) {
           <Text className="text-White ml-1">Reportar Sobrecarga</Text>
         </TouchableOpacity>
         <View className="flex-row justify-between mt-auto">
-          <TouchableOpacity className="mt-4 w-28 h-12 bg-Green self-center items-center justify-center rounded-lg flex-row">
-            <IconP name="location-pin" size={24} color={"white"} />
-            <Text className="text-White ml-1">Rotas</Text>
-          </TouchableOpacity>
           <TouchableOpacity
             className="mt-4 w-28 h-12 bg-Green self-center items-center justify-center rounded-lg"
             onPress={() => navigation.goBack()}
           >
             <IconC name="close" size={32} color={"white"} />
+          </TouchableOpacity>
+          <TouchableOpacity className="mt-4 w-28 h-12 bg-Green self-center items-center justify-center rounded-lg flex-row">
+            <IconP name="location-pin" size={24} color={"white"} />
+            <Text className="text-White ml-1">Rotas</Text>
           </TouchableOpacity>
         </View>
       </View>

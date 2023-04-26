@@ -124,11 +124,10 @@ export default function ReportPage({ navigation, route }) {
         )}
         <View className="flex-row justify-between mt-auto">
           <TouchableOpacity
-            className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg flex-row"
-            onPress={() => navigation.navigate("MapPage")}
+            className="mt-4 w-28 h-12 bg-Green self-center items-center justify-center rounded-lg"
+            onPress={() => navigation.goBack()}
           >
-            <IconP name="location-pin" size={24} color={"white"} />
-            <Text className="text-White ml-1">Rotas</Text>
+            <IconC name="close" size={32} color={"white"} />
           </TouchableOpacity>
           <TouchableOpacity
             className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg flex-row"
