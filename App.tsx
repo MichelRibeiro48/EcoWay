@@ -1,8 +1,13 @@
-import { StatusBar } from "expo-status-bar";
-import { Text, View } from "react-native";
-import IntroPage from "./src/pages/IntroPage";
-import Routes from "./src/routes/routes";
+import Routes from './src/routes/routes'
+import { ApolloProvider } from '@apollo/client'
+import { apolloClient } from './src/lib/apollo'
 
 export default function App() {
-  return <Routes />;
+  return (
+    <>
+      <ApolloProvider client={apolloClient}>
+        <Routes />
+      </ApolloProvider>
+    </>
+  )
 }
