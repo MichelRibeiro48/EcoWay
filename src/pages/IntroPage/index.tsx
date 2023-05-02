@@ -33,20 +33,17 @@ export default function IntroPage({ navigation }) {
   }
 
   return (
-    <View className='flex-1 items-center bg-Green'>
-      <BackgroundSvg
-        width={'100%'}
-        height={380}
-      />
+    <View className="flex-1 items-center bg-Green">
+      <BackgroundSvg width={'100%'} height={380} />
       <Text
-        className='text-White text-7xl pt-6'
+        className="text-White text-7xl pt-6"
         style={{ fontFamily: 'Fasthand_400Regular' }}
       >
         EcoWay
       </Text>
-      <Text className='px-6 text-White'>{TextDesc}</Text>
+      <Text className="px-6 text-White">{TextDesc}</Text>
       <TouchableOpacity
-        className='mt-12 bg-Title w-10/12 h-12 px-6 items-center justify-center rounded-xl'
+        className="mt-12 bg-Title w-10/12 h-12 px-6 items-center justify-center rounded-xl"
         style={[
           Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
         ]}

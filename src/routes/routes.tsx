@@ -1,15 +1,15 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
-import IntroPage from "../pages/IntroPage";
-import MapPage from "../pages/MapPage";
-import PointAbout from "../pages/PointAbout";
-import ReportPage from "../pages/ReportPage";
-import HomePage from "../pages/HomePage";
-import TipsRecyclePage from "../pages/TipsRecyclePage";
-import PostPage from "../pages/PostPage";
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import React from 'react'
+import IntroPage from '../pages/IntroPage'
+import MapPage from '../pages/MapPage'
+import PointAbout from '../pages/PointAbout'
+import ReportPage from '../pages/ReportPage'
+import HomePage from '../pages/HomePage'
+import TipsRecyclePage from '../pages/TipsRecyclePage'
+import PostPage from '../pages/PostPage'
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator()
 export default function Routes() {
   return (
     <NavigationContainer>
@@ -23,5 +23,5 @@ export default function Routes() {
         <Stack.Screen name="PostPage" component={PostPage} />
       </Stack.Navigator>
     </NavigationContainer>
-  );
+  )
 }
