@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   View,
   Text,
@@ -7,34 +7,34 @@ import {
   Image,
   TouchableOpacity,
   Pressable,
-} from "react-native";
-import styles from "./styles";
-import TipsList from "../HomePage/mockTips";
-import IconI from "@expo/vector-icons/Ionicons";
+} from 'react-native'
+import styles from './styles'
+import TipsList from '../HomePage/mockTips'
+import IconI from '@expo/vector-icons/Ionicons'
 import {
   useFonts,
   Roboto_100Thin_Italic,
   Roboto_500Medium,
-} from "@expo-google-fonts/roboto";
+} from '@expo-google-fonts/roboto'
 
 export default function TipsRecyclePage({ navigation }) {
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
-  });
+  })
 
   if (!fontsLoaded) {
-    return;
+    return
   }
   return (
     <View className="flex-1 items-center justify-center pt-16">
       <View className="flex-row self-start pl-3">
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <IconI name="chevron-back-outline" size={32} color={"#576032"} />
+          <IconI name="chevron-back-outline" size={32} color={'#576032'} />
         </TouchableOpacity>
         <Text
           className="text-3xl text-Green ml-6 mb-8"
-          style={{ fontFamily: "Roboto_500Medium" }}
+          style={{ fontFamily: 'Roboto_500Medium' }}
         >
           Dicas de Reciclagem
         </Text>
@@ -44,10 +44,10 @@ export default function TipsRecyclePage({ navigation }) {
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <Pressable
-            onPress={() => navigation.navigate("PostPage", { item })}
+            onPress={() => navigation.navigate('PostPage', { item })}
             className="w-80 mb-8 rounded-b-lg h-80"
             style={[
-              Platform.OS === "android"
+              Platform.OS === 'android'
                 ? styles.AndroidShadow
                 : styles.IosShadow,
             ]}
@@ -59,20 +59,20 @@ export default function TipsRecyclePage({ navigation }) {
             <View className="ml-2 pr-7 pl-2">
               <Text
                 className="text-xs text-Grey"
-                style={{ fontFamily: "Roboto_400Regular" }}
+                style={{ fontFamily: 'Roboto_400Regular' }}
               >
                 Há 17 minutos.
               </Text>
               <Text
                 className="text-lg"
-                style={{ fontFamily: "Roboto_500Medium" }}
+                style={{ fontFamily: 'Roboto_500Medium' }}
               >
                 {item.title}
               </Text>
               <Text
                 numberOfLines={3}
                 className="text-lg"
-                style={{ fontFamily: "Roboto_400Regular" }}
+                style={{ fontFamily: 'Roboto_400Regular' }}
               >
                 {item.description}
               </Text>
@@ -81,5 +81,5 @@ export default function TipsRecyclePage({ navigation }) {
         )}
       />
     </View>
-  );
+  )
 }

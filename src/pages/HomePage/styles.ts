@@ -1,8 +1,8 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
   AndroidShadow: {
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -15,5 +15,5 @@ export default StyleSheet.create({
   IosShadow: {
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.3,
-  }
+  },
 })
