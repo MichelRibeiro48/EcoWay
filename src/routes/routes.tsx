@@ -8,6 +8,8 @@ import ReportPage from '../pages/ReportPage'
 import HomePage from '../pages/HomePage'
 import TipsRecyclePage from '../pages/TipsRecyclePage'
 import PostPage from '../pages/PostPage'
+import LoginPage from '../pages/LoginPage'
+import RegisterPage from '../pages/RegisterPage'
 
 const Stack = createNativeStackNavigator()
 export default function Routes() {
@@ -15,6 +17,8 @@ export default function Routes() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="IntroPage" component={IntroPage} />
+        <Stack.Screen name="LoginPage" component={LoginPage} />
+        <Stack.Screen name="RegisterPage" component={RegisterPage} />
         <Stack.Screen name="HomePage" component={HomePage} />
         <Stack.Screen name="MapPage" component={MapPage} />
         <Stack.Screen name="PointAbout" component={PointAbout} />

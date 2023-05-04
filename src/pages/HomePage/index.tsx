@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useSession } from '@clerk/clerk-expo'
 import {
   View,
   Text,
@@ -26,6 +27,7 @@ import TipsList from './mockTips'
 import styles from './styles'
 
 export default function HomePage({ navigation }) {
+  const { session } = useSession()
   const [location, setLocation] = useState<LocationObject | null>(null)
   const initialLocation = {
     latitude: location?.coords.latitude,

@@ -21,8 +21,8 @@ const getPosts = gql`
 `
 
 export default function IntroPage({ navigation }) {
-  const { data } = useQuery(getPosts)
-  console.log(data)
+  const data = useQuery(getPosts)
+  console.log(data.data)
 
   const [fontsLoaded] = useFonts({
     Fasthand_400Regular,
@@ -47,7 +47,7 @@ export default function IntroPage({ navigation }) {
         style={[
           Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
         ]}
-        onPress={() => navigation.navigate('HomePage')}
+        onPress={() => navigation.navigate('LoginPage')}
       >
         <Text>Começar agora</Text>
       </TouchableOpacity>
