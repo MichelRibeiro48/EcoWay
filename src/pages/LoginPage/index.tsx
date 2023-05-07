@@ -7,7 +7,7 @@ import {
   Platform,
   Pressable,
 } from 'react-native'
-import { useOAuth, useSignIn } from '@clerk/clerk-expo'
+import { useOAuth, useSession, useSignIn } from '@clerk/clerk-expo'
 import BackgroundSvg from '../../assets/background.svg'
 import styles from '../PointAbout/styles'
 import Icon from '@expo/vector-icons/AntDesign'
@@ -20,6 +20,7 @@ export default function LoginPage({ navigation }) {
   useWarmUpBrowser()
 
   const { signIn, setSession, isLoaded } = useSignIn()
+  const { session } = useSession()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -33,12 +34,12 @@ export default function LoginPage({ navigation }) {
       if (createdSessionId) {
         setActive({ session: createdSessionId })
       } else {
-        // Use signIn or signUp for next steps such as MFA
+        // Use signIn or signUp, from startOAuthFlow, for next steps such as MFA
       }
     } catch (err) {
       console.error('OAuth error', JSON.stringify(err))
     }
-  }, [startOAuthFlow])
+  }, [])
 
   const onSignInPress = async () => {
     if (!isLoaded) {
@@ -58,8 +59,8 @@ export default function LoginPage({ navigation }) {
   }
 
   useEffect(() => {
-    navigation.replace('HomePage')
-  }, [navigation])
+    if (session) navigation.replace('HomePage')
+  }, [navigation, session])
 
   return (
     <View className="flex-1 items-center bg-Green">
