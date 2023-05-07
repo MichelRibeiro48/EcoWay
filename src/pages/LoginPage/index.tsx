@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -7,17 +7,38 @@ import {
   Platform,
   Pressable,
 } from 'react-native'
-import { useSignIn } from '@clerk/clerk-expo'
+import { useOAuth, useSignIn } from '@clerk/clerk-expo'
 import BackgroundSvg from '../../assets/background.svg'
 import styles from '../PointAbout/styles'
-import { useClerk } from '@clerk/clerk-react'
 import Icon from '@expo/vector-icons/AntDesign'
+import { maybeCompleteAuthSession } from 'expo-web-browser'
+import { useWarmUpBrowser } from '../../hooks/clerk'
+
+maybeCompleteAuthSession()
 
 export default function LoginPage({ navigation }) {
+  useWarmUpBrowser()
+
   const { signIn, setSession, isLoaded } = useSignIn()
-  const { signOut } = useClerk()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
+  const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' })
+
+  const onOAuthButtonPress = React.useCallback(async () => {
+    try {
+      const { createdSessionId, setActive } = await startOAuthFlow()
+
+      if (createdSessionId) {
+        setActive({ session: createdSessionId })
+      } else {
+        // Use signIn or signUp for next steps such as MFA
+      }
+    } catch (err) {
+      console.error('OAuth error', JSON.stringify(err))
+    }
+  }, [startOAuthFlow])
 
   const onSignInPress = async () => {
     if (!isLoaded) {
@@ -35,7 +56,11 @@ export default function LoginPage({ navigation }) {
       console.log('Error:> ' + (err.errors ? err.errors[0].message : err))
     }
   }
-  console.log(signIn)
+
+  useEffect(() => {
+    navigation.replace('HomePage')
+  }, [navigation])
+
   return (
     <View className="flex-1 items-center bg-Green">
       <BackgroundSvg width={'100%'} height={380} />
@@ -69,7 +94,7 @@ export default function LoginPage({ navigation }) {
         style={[
           Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
         ]}
-        onPress={() => signOut()}
+        onPress={() => onOAuthButtonPress()}
       >
         <Icon name="google" size={20} />
         <Text className="ml-2">Entrar com o google</Text>
