@@ -4,6 +4,7 @@ import { apolloClient } from './src/lib/apollo'
 import { ClerkProvider } from '@clerk/clerk-expo'
 import * as SecureStore from 'expo-secure-store'
 import { CLERK_PUBLISHABLE_KEY } from '@env'
+import { useFonts, Fasthand_400Regular } from '@expo-google-fonts/fasthand'
 
 const tokenCache = {
   getToken(key: string) {
@@ -22,6 +23,13 @@ const tokenCache = {
   },
 }
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Fasthand_400Regular,
+  })
+
+  if (!fontsLoaded) {
+    return
+  }
   return (
     <>
       <ClerkProvider
