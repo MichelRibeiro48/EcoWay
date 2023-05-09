@@ -5,7 +5,7 @@ module.exports = {
     colors: {
       Green: '#576032',
       LightGreen: '#ACB195',
-      White: '#fff',
+      White: '#FFF8EF',
       Title: '#FEF9E0',
       Red: '#E13D3D',
       Yellow: '#E1B33D',
