@@ -13,13 +13,13 @@ import BackgroundSvg from '../../assets/background.svg'
 import styles from '../PointAbout/styles'
 
 export default function RegisterPage({ navigation }) {
-  const { signUp, setActive, isLoaded } = useSignUp()
+  const { signUp, isLoaded } = useSignUp()
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [psword, setPsword] = useState('')
   const [ConfirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState(false)
+  const [, setError] = useState(false)
 
   if (!isLoaded) {
     return null
@@ -37,10 +37,7 @@ export default function RegisterPage({ navigation }) {
         emailAddress: email,
         password: psword,
       })
-      const teste = await signUp.prepareEmailAddressVerification()
-      const teste2 = await signUp.attemptEmailAddressVerification({
-        code: '432522',
-      })
+
       console.log(response.status)
     } catch (err) {
       console.log('Error:> ' + (err.errors ? err.errors[0].message : err))

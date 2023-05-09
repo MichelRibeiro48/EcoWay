@@ -10,7 +10,7 @@ import {
 } from '@expo-google-fonts/roboto'
 
 export default function PostPage({ navigation, route }) {
-  const { item } = route.params
+  const { post } = route.params
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
@@ -22,26 +22,26 @@ export default function PostPage({ navigation, route }) {
     return
   }
   return (
-    <View className="flex-1 pt-16">
+    <View className="flex-1 pt-16 bg-White">
       <TouchableOpacity onPress={() => navigation.goBack()} className="ml-3">
         <IconI name="chevron-back-outline" size={32} color={'#576032'} />
       </TouchableOpacity>
-      <Image source={item.imageBanner} className="w-full h-60 mt-9 mb-4" />
+      <Image source={post.imageBanner} className="w-full h-60 mt-9 mb-4" />
       <View className="p-4">
         <View className="flex-row">
-          <Image source={item.imageAuthor} className="w-20 h-20 rounded-full" />
+          <Image source={post.imageAuthor} className="w-20 h-20 rounded-full" />
           <View className="justify-center ml-2">
             <Text
               className="text-base"
               style={{ fontFamily: 'Roboto_400Regular' }}
             >
-              Por {item.nameAuthor}
+              Por {post.nameAuthor}
             </Text>
             <Text
               className="text-base text-Grey"
               style={{ fontFamily: 'Roboto_400Regular' }}
             >
-              {item.datePost} {item.timePost}
+              {post.datePost} {post.timePost}
             </Text>
           </View>
         </View>
@@ -49,10 +49,10 @@ export default function PostPage({ navigation, route }) {
           className="text-2xl mb-6"
           style={{ fontFamily: 'Roboto_500Medium' }}
         >
-          {item.title}
+          {post.title}
         </Text>
         <Text className="text-base" style={{ fontFamily: 'Roboto_400Regular' }}>
-          {item.description}
+          {post.description}
         </Text>
       </View>
     </View>

@@ -38,14 +38,14 @@ export default function PointAbout({ navigation, route }) {
           uri: 'https://w0.peakpx.com/wallpaper/759/715/HD-wallpaper-park-trees-grass-green-nature.jpg',
         }}
       />
-      <View className="w-11/12 h-5/6 bg-White absolute self-center p-6 flex-col rounded-xl">
+      <View className="w-11/12 bg-White absolute self-center p-6 flex-col rounded-xl">
         <CardLocation
           image={image}
           numberReported={numberReported}
           title={title}
         />
         <View
-          className="w-full h-20 bg-White items-center rounded-xl flex-row px-11 py-3 mt-6"
+          className="w-full bg-White items-center justify-center rounded-xl flex-row py-4 mt-6"
           style={[
             Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
           ]}
@@ -83,7 +83,7 @@ export default function PointAbout({ navigation, route }) {
           </View>
         </View>
         <View
-          className="w-full h-24 bg-White justify-center rounded-xl flex-row px-11 py-3 mt-6"
+          className="w-full bg-White justify-center rounded-xl flex-row px-11 py-3 mt-6"
           style={[
             Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
           ]}
@@ -97,7 +97,7 @@ export default function PointAbout({ navigation, route }) {
           </View>
         </View>
         <View
-          className="w-full h-20 bg-White justify-center rounded-xl flex-row px-11 py-3 mt-6"
+          className="w-full bg-White justify-center rounded-xl flex-row px-11 py-3 mt-6"
           style={[
             Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
           ]}
@@ -120,24 +120,26 @@ export default function PointAbout({ navigation, route }) {
           </View>
         </View>
         <TouchableOpacity
-          className="mt-10 w-48 h-16 bg-Green self-center items-center justify-center rounded-lg flex-row"
+          className="mt-10 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg flex-row"
           onPress={() =>
             navigation.navigate('ReportPage', { title, image, numberReported })
           }
         >
           <IconFe name="alert-triangle" size={24} color={'white'} />
-          <Text className="text-White ml-1">Reportar Sobrecarga</Text>
+          <Text className="text-White ml-1 font-bold text-base">
+            Reportar Sobrecarga
+          </Text>
         </TouchableOpacity>
         <View className="flex-row justify-between mt-auto">
           <TouchableOpacity
-            className="mt-4 w-28 h-12 bg-Green self-center items-center justify-center rounded-lg"
+            className="mt-4 w-28 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg"
             onPress={() => navigation.goBack()}
           >
-            <IconC name="close" size={32} color={'white'} />
+            <IconC name="close" size={24} color={'white'} />
           </TouchableOpacity>
-          <TouchableOpacity className="mt-4 w-28 h-12 bg-Green self-center items-center justify-center rounded-lg flex-row">
+          <TouchableOpacity className="mt-4 w-28 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg flex-row">
             <IconP name="location-pin" size={24} color={'white'} />
-            <Text className="text-White ml-1">Rotas</Text>
+            <Text className="text-White ml-1 font-bold text-base">Rotas</Text>
           </TouchableOpacity>
         </View>
       </View>
