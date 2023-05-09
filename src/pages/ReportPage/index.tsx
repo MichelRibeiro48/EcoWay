@@ -67,7 +67,7 @@ export default function ReportPage({ navigation, route }) {
           ]}
         >
           <TextInput
-            className="w-80 h-10"
+            className="w-full h-10"
             placeholder="Escreva uma breve descrição de como está o local"
             multiline
           />
