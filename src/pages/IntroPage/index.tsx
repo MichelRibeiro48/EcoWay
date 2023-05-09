@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import BackgroundSvg from '../../assets/background.svg'
 import styles from '../PointAbout/styles'
 import { View, Text, TouchableOpacity, Platform } from 'react-native'
 import { useFonts, Fasthand_400Regular } from '@expo-google-fonts/fasthand'
 import { TextDesc } from './TextDesc'
 import { gql, useQuery } from '@apollo/client'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const getPosts = gql`
   query PostsPagination {
@@ -27,6 +28,19 @@ export default function IntroPage({ navigation }) {
   const [fontsLoaded] = useFonts({
     Fasthand_400Regular,
   })
+
+  const shouldShowIntroPage = useCallback(async () => {
+    const storageData = await AsyncStorage.getItem('intro')
+    if (!storageData) {
+      await AsyncStorage.setItem('intro', 'false')
+    } else {
+      navigation.navigate('LoginPage')
+    }
+  }, [navigation])
+
+  useEffect(() => {
+    shouldShowIntroPage()
+  }, [shouldShowIntroPage])
 
   if (!fontsLoaded) {
     return
