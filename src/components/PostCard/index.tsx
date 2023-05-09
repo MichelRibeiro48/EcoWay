@@ -1,4 +1,4 @@
-import { Image, TouchableOpacity, Text, View } from 'react-native'
+import { Image, Text, View, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../routes/routes'
