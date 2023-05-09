@@ -40,7 +40,6 @@ export default function RegisterPage({ navigation }) {
       setError('')
     }
   }, [ConfirmPassword, psword])
-  console.log(error)
   if (!isLoaded) {
     return null
   }

@@ -168,7 +168,7 @@ export default function LoginPage({ navigation }) {
         </Pressable>
         <TouchableOpacity
           className={classNames(
-            `mt-8 bg-Title w-10/12 h-12 px-6 items-center justify-center rounded-xl`,
+            `my-8 bg-Title w-10/12 h-12 px-6 items-center justify-center rounded-xl`,
             {
               'bg-Grey': loading,
             }
