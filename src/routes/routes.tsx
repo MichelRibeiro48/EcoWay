@@ -10,6 +10,7 @@ import TipsRecyclePage from '../pages/TipsRecyclePage'
 import PostPage from '../pages/PostPage'
 import LoginPage from '../pages/LoginPage'
 import RegisterPage from '../pages/RegisterPage'
+import AuthenticationPage from '../pages/AuthenticationPage'
 
 const Stack = createNativeStackNavigator()
 export default function Routes() {
@@ -19,6 +20,10 @@ export default function Routes() {
         <Stack.Screen name="IntroPage" component={IntroPage} />
         <Stack.Screen name="LoginPage" component={LoginPage} />
         <Stack.Screen name="RegisterPage" component={RegisterPage} />
+        <Stack.Screen
+          name="AuthenticationPage"
+          component={AuthenticationPage}
+        />
         <Stack.Screen name="HomePage" component={HomePage} />
         <Stack.Screen name="MapPage" component={MapPage} />
         <Stack.Screen name="PointAbout" component={PointAbout} />
