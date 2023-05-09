@@ -14,7 +14,8 @@ import styles from '../PointAbout/styles'
 import classNames from 'classnames'
 
 export default function RegisterPage({ navigation }) {
-  const { signUp, setActive, isLoaded } = useSignUp()
+  const { signUp, isLoaded } = useSignUp()
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [psword, setPsword] = useState('')

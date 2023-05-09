@@ -7,7 +7,6 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
-  Pressable,
 } from 'react-native'
 import {
   useFonts,
@@ -24,6 +23,7 @@ import {
 import LogoHomeSvg from '../../assets/logohome.svg'
 import TipsList from './mockTips'
 import styles from './styles'
+import { PostCard } from '../../components/PostCard'
 
 export default function HomePage({ navigation }) {
   const [location, setLocation] = useState<LocationObject | null>(null)
@@ -101,43 +101,8 @@ export default function HomePage({ navigation }) {
         </Text>
         <FlatList
           data={TipsList.slice(0, 2)}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => navigation.navigate('PostPage', { item })}
-              className="w-80 mb-8 rounded-b-lg h-80"
-              style={[
-                Platform.OS === 'android'
-                  ? styles.AndroidShadow
-                  : styles.IosShadow,
-              ]}
-            >
-              <Image
-                source={item.imageBanner}
-                className="w-80 h-36 mb-2 self-center rounded-b-xl"
-              />
-              <View className="ml-2 pr-7 pl-2">
-                <Text
-                  className="text-xs text-Grey"
-                  style={{ fontFamily: 'Roboto_400Regular' }}
-                >
-                  Há 17 minutos.
-                </Text>
-                <Text
-                  className="text-lg"
-                  style={{ fontFamily: 'Roboto_500Medium' }}
-                >
-                  {item.title}
-                </Text>
-                <Text
-                  numberOfLines={3}
-                  className="text-lg"
-                  style={{ fontFamily: 'Roboto_400Regular' }}
-                >
-                  {item.description}
-                </Text>
-              </View>
-            </Pressable>
-          )}
+          renderItem={({ item }) => <PostCard post={item} />}
+          className="w-full overflow-visible"
         />
         <TouchableOpacity
           onPress={() => navigation.navigate('TipsRecyclePage')}

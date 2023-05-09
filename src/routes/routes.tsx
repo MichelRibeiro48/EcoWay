@@ -12,6 +12,18 @@ import LoginPage from '../pages/LoginPage'
 import RegisterPage from '../pages/RegisterPage'
 import AuthenticationPage from '../pages/AuthenticationPage'
 
+export type RootStackParamList = {
+  IntroPage: undefined
+  LoginPage: undefined
+  RegisterPage: undefined
+  HomePage: undefined
+  MapPage: undefined
+  PointAbout: undefined
+  ReportPage: undefined
+  TipsRecyclePage: undefined
+  PostPage: any
+}
+
 const Stack = createNativeStackNavigator()
 export default function Routes() {
   return (
