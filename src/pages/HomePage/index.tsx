@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useSession } from '@clerk/clerk-expo'
 import {
   View,
   Text,
@@ -27,8 +26,8 @@ import TipsList from './mockTips'
 import styles from './styles'
 
 export default function HomePage({ navigation }) {
-  const { session } = useSession()
   const [location, setLocation] = useState<LocationObject | null>(null)
+
   const initialLocation = {
     latitude: location?.coords.latitude,
     longitude: location?.coords.longitude,
@@ -45,9 +44,11 @@ export default function HomePage({ navigation }) {
       setLocation(currentPosition)
     }
   }
+
   useEffect(() => {
     requestLocationPermission()
   }, [])
+
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
@@ -74,6 +75,7 @@ export default function HomePage({ navigation }) {
           <Image
             source={require('../../assets/mapExample.png')}
             className="w-full rounded-t-2xl"
+            alt="Illustrative image of a map"
           />
           <View
             className="bg-Green w-full h-14 items-center justify-center rounded-b-lg"
