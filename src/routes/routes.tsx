@@ -11,12 +11,14 @@ import PostPage from '../pages/PostPage'
 import LoginPage from '../pages/LoginPage'
 import RegisterPage from '../pages/RegisterPage'
 import AuthenticationPage from '../pages/AuthenticationPage'
+import ProfilePage from '../pages/ProfilePage'
 
 export type RootStackParamList = {
   IntroPage: undefined
   LoginPage: undefined
   RegisterPage: undefined
   HomePage: undefined
+  ProfilePage: undefined
   MapPage: undefined
   PointAbout: undefined
   ReportPage: undefined
@@ -37,6 +39,7 @@ export default function Routes() {
           component={AuthenticationPage}
         />
         <Stack.Screen name="HomePage" component={HomePage} />
+        <Stack.Screen name="ProfilePage" component={ProfilePage} />
         <Stack.Screen name="MapPage" component={MapPage} />
         <Stack.Screen name="PointAbout" component={PointAbout} />
         <Stack.Screen name="ReportPage" component={ReportPage} />

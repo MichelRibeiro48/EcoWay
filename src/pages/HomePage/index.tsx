@@ -7,6 +7,7 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
+  Pressable,
 } from 'react-native'
 import {
   useFonts,
@@ -15,39 +16,14 @@ import {
   Roboto_400Regular,
   Roboto_700Bold,
 } from '@expo-google-fonts/roboto'
-import {
-  LocationObject,
-  getCurrentPositionAsync,
-  requestForegroundPermissionsAsync,
-} from 'expo-location'
 import LogoHomeSvg from '../../assets/logohome.svg'
 import TipsList from './mockTips'
 import styles from './styles'
 import { PostCard } from '../../components/PostCard'
+import { useUser } from '@clerk/clerk-expo'
 
 export default function HomePage({ navigation }) {
-  const [location, setLocation] = useState<LocationObject | null>(null)
-
-  const initialLocation = {
-    latitude: location?.coords.latitude,
-    longitude: location?.coords.longitude,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  }
-  console.log(initialLocation)
-
-  async function requestLocationPermission() {
-    const { granted } = await requestForegroundPermissionsAsync()
-
-    if (granted) {
-      const currentPosition = await getCurrentPositionAsync()
-      setLocation(currentPosition)
-    }
-  }
-
-  useEffect(() => {
-    requestLocationPermission()
-  }, [])
+  const { user } = useUser()
 
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
@@ -61,6 +37,22 @@ export default function HomePage({ navigation }) {
   }
   return (
     <ScrollView className="bg-Green">
+      <Pressable
+        className="self-end mr-4 mt-11 flex-row items-center"
+        onPress={() => navigation.navigate('ProfilePage')}
+      >
+        <Text
+          className="text-White mr-2"
+          style={{ fontFamily: 'Roboto_700Bold' }}
+        >
+          Óla, {user?.firstName}
+        </Text>
+        <Image
+          source={{ uri: user?.profileImageUrl }}
+          alt="ImgProfile"
+          className="w-16 h-16 rounded-full"
+        />
+      </Pressable>
       <View className="bg-Green">
         <LogoHomeSvg width={'100%'} height={280} />
       </View>
