@@ -13,7 +13,7 @@ export const PostCard = ({ post }: PostCartProps) => {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate('PostPage', { post })}
+      onPress={() => navigation.navigate('PostPage', { postId: post.id })}
       className="w-full mb-8 overflow-hidden border-2 border-Green rounded-lg"
     >
       <Image
