@@ -125,7 +125,7 @@ export default function LoginPage({ navigation }) {
             `w-10/12 h-12 rounded-xl bg-Title px-2 flex-row justify-between`,
             {
               'border-2 border-Red': errorPassword !== '',
-            }
+            },
           )}
         >
           <TextInput
@@ -171,7 +171,7 @@ export default function LoginPage({ navigation }) {
             `my-8 bg-Title w-10/12 h-12 px-6 items-center justify-center rounded-xl`,
             {
               'bg-Grey': loading,
-            }
+            },
           )}
           disabled={loading}
           style={[
