@@ -9,6 +9,7 @@ import {
 import { PostCard } from '../../components/PostCard'
 import { gql, useQuery } from '@apollo/client'
 import { getPostsResponse } from '../HomePage'
+import { ActivityIndicator } from 'react-native-paper'
 
 const getPosts = (first: number, skip: number) => gql`
   query PostsPagination {
@@ -56,13 +57,15 @@ export default function TipsRecyclePage({ navigation }) {
           Dicas de Reciclagem
         </Text>
       </View>
-      {data && data.posts && (
+      {data && !data.posts ? (
         <FlatList
           data={data.posts}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <PostCard post={item} />}
           className="px-5"
         />
+      ) : (
+        <ActivityIndicator size="large" color="#576032" className="my-auto" />
       )}
     </View>
   )
