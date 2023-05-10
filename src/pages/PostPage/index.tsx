@@ -10,6 +10,8 @@ import {
 } from '@expo-google-fonts/roboto'
 import { gql, useQuery } from '@apollo/client'
 import { ActivityIndicator } from 'react-native-paper'
+import Markdown from '@ronradtke/react-native-markdown-display'
+import dayjs from 'dayjs'
 
 export interface Post {
   publishedAt: string
@@ -64,6 +66,8 @@ export default function PostPage({ navigation, route }) {
     Roboto_700Bold,
   })
 
+  const publishedAt = dayjs(post.publishedAt)
+
   if (!fontsLoaded) {
     return
   }
@@ -92,7 +96,7 @@ export default function PostPage({ navigation, route }) {
             />
             <View className="justify-center ml-2">
               <Text
-                className="text-base"
+                className="text-lg font-bold"
                 style={{ fontFamily: 'Roboto_400Regular' }}
               >
                 Por {post.author.name}
@@ -101,7 +105,7 @@ export default function PostPage({ navigation, route }) {
                 className="text-base text-Grey"
                 style={{ fontFamily: 'Roboto_400Regular' }}
               >
-                {post.publishedAt}
+                {publishedAt.format('DD/MM/YYYY[ as ]HH:mm[h]')}
               </Text>
             </View>
           </View>
@@ -111,12 +115,7 @@ export default function PostPage({ navigation, route }) {
           >
             {post.title}
           </Text>
-          <Text
-            className="text-base"
-            style={{ fontFamily: 'Roboto_400Regular' }}
-          >
-            {post.content.markdown}
-          </Text>
+          <Markdown>{post.content.markdown}</Markdown>
         </View>
       </ScrollView>
     </View>
