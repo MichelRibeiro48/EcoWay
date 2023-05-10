@@ -66,7 +66,7 @@ export default function PostPage({ navigation, route }) {
     Roboto_700Bold,
   })
 
-  const publishedAt = dayjs(post.publishedAt)
+  const publishedAt = post ? dayjs(post.publishedAt) : dayjs(new Date())
 
   if (!fontsLoaded) {
     return
@@ -77,11 +77,11 @@ export default function PostPage({ navigation, route }) {
   }
 
   return (
-    <View className="flex-1 py-16 bg-White">
+    <View className="flex-1 pt-16 bg-White">
       <TouchableOpacity onPress={() => navigation.goBack()} className="m-3">
         <IconI name="chevron-back-outline" size={32} color={'#576032'} />
       </TouchableOpacity>
-      <ScrollView>
+      <ScrollView className="flex-1">
         <Image
           source={{ uri: post.coverImage.url }}
           className="w-full h-60 my-9 mb-4"
@@ -105,7 +105,7 @@ export default function PostPage({ navigation, route }) {
                 className="text-base text-Grey"
                 style={{ fontFamily: 'Roboto_400Regular' }}
               >
-                {publishedAt.format('DD/MM/YYYY[ as ]HH:mm[h]')}
+                {publishedAt.format('DD/MM/YYYY[ às ]HH:mm[h]')}
               </Text>
             </View>
           </View>
