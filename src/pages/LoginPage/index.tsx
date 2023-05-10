@@ -177,7 +177,7 @@ export default function LoginPage({ navigation }) {
           style={[
             Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
           ]}
-          onPress={onSignInPress}
+          onPress={() => onSignInPress}
         >
           {loading ? <ActivityIndicator color={'white'} /> : <Text>Login</Text>}
         </TouchableOpacity>
