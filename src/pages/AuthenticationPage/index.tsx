@@ -11,7 +11,6 @@ import styles from '../PointAbout/styles'
 
 import { useFonts, Fasthand_400Regular } from '@expo-google-fonts/fasthand'
 import BackgroundSvg from '../../assets/background.svg'
-import { TextDesc } from '../IntroPage/TextDesc'
 import classNames from 'classnames'
 import { useSignUp } from '@clerk/clerk-expo'
 
@@ -60,7 +59,7 @@ export default function AuthenticationPage({ navigation, route }) {
       console.log(err.errors[0])
       if (err.errors[0].message.match('Too many requests.')) {
         setAwaitRequest(
-          'Houve muitas tentativas de login, espere um tempo para tentar novamente'
+          'Houve muitas tentativas de login, espere um tempo para tentar novamente',
         )
       }
       if (err.errors[0].message.match('is incorrect')) {

@@ -20,7 +20,7 @@ export type RootStackParamList = {
   HomePage: undefined
   ProfilePage: undefined
   MapPage: undefined
-  PointAbout: undefined
+  PointAbout: { id: string }
   ReportPage: undefined
   TipsRecyclePage: undefined
   PostPage: any

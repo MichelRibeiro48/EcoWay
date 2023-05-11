@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -23,6 +23,7 @@ import { useUser } from '@clerk/clerk-expo'
 import { gql, useQuery } from '@apollo/client'
 import { IPost } from '../../@types/IPost'
 import { ActivityIndicator } from 'react-native-paper'
+import ModalLogout from '../../components/ModalLogout'
 
 const getPosts = gql`
   query PostsPagination {
@@ -37,36 +38,14 @@ const getPosts = gql`
     }
   }
 `
-
 export interface getPostsResponse {
   posts: IPost[]
 }
 
 export default function HomePage({ navigation }) {
   const { user } = useUser()
-  const [location, setLocation] = useState<LocationObject | null>(null)
   const { data } = useQuery<getPostsResponse>(getPosts)
-
-  const initialLocation = {
-    latitude: location?.coords.latitude,
-    longitude: location?.coords.longitude,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  }
-  console.log(initialLocation)
-
-  async function requestLocationPermission() {
-    const { granted } = await requestForegroundPermissionsAsync()
-
-    if (granted) {
-      const currentPosition = await getCurrentPositionAsync()
-      setLocation(currentPosition)
-    }
-  }
-
-  useEffect(() => {
-    requestLocationPermission()
-  }, [])
+  const [visible, setVisible] = useState(false)
 
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
@@ -82,7 +61,7 @@ export default function HomePage({ navigation }) {
     <ScrollView className="bg-Green">
       <Pressable
         className="self-end mr-4 mt-11 flex-row items-center"
-        onPress={() => navigation.navigate('ProfilePage')}
+        onPress={() => setVisible(!visible)}
       >
         <Text
           className="text-White mr-2"
@@ -96,6 +75,7 @@ export default function HomePage({ navigation }) {
           className="w-16 h-16 rounded-full"
         />
       </Pressable>
+      <ModalLogout visible={visible} closeModal={() => setVisible(!visible)} />
       <View className="bg-Green">
         <LogoHomeSvg width={'100%'} height={280} />
       </View>

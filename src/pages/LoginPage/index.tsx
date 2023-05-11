@@ -1,18 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Platform,
-  Pressable,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native'
+import { View, Text, TextInput, Pressable, ScrollView } from 'react-native'
 import { useOAuth, useSession, useSignIn } from '@clerk/clerk-expo'
 import BackgroundSvg from '../../assets/background.svg'
-import styles from '../PointAbout/styles'
-import Icon from '@expo/vector-icons/AntDesign'
 import IconE from '@expo/vector-icons/Entypo'
 import { maybeCompleteAuthSession } from 'expo-web-browser'
 import { useWarmUpBrowser } from '../../hooks/clerk'
@@ -147,7 +136,7 @@ export default function LoginPage({ navigation }) {
             `w-10/12 h-12 rounded-xl bg-Title px-2 flex-row justify-between`,
             {
               'border-2 border-Red': errorPassword !== '',
-            }
+            },
           )}
         >
           <TextInput
