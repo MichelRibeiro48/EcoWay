@@ -6,6 +6,7 @@ import {
   Platform,
   FlatList,
   TouchableOpacity,
+  Linking,
 } from 'react-native'
 import {
   useFonts,
@@ -24,6 +25,11 @@ export default function PointAbout({ navigation, route }) {
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
+  })
+
+  const mapsURL = Platform.select({
+    ios: `maps:${-1.4385271},${48.4786195}`,
+    android: `geo:${-1.4385271},${48.4786195}`,
   })
 
   if (!fontsLoaded) {
@@ -137,7 +143,10 @@ export default function PointAbout({ navigation, route }) {
           >
             <IconC name="close" size={24} color={'white'} />
           </TouchableOpacity>
-          <TouchableOpacity className="mt-4 w-28 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg flex-row">
+          <TouchableOpacity
+            className="mt-4 w-28 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg flex-row"
+            onPress={() => Linking.openURL(mapsURL)}
+          >
             <IconP name="location-pin" size={24} color={'white'} />
             <Text className="text-White ml-1 font-bold text-base">Rotas</Text>
           </TouchableOpacity>
