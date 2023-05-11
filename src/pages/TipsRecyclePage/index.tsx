@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'
-import TipsList from '../HomePage/mockTips'
 import IconI from '@expo/vector-icons/Ionicons'
 import {
   useFonts,
@@ -8,8 +7,32 @@ import {
   Roboto_500Medium,
 } from '@expo-google-fonts/roboto'
 import { PostCard } from '../../components/PostCard'
+import { gql, useQuery } from '@apollo/client'
+import { getPostsResponse } from '../HomePage'
+import { ActivityIndicator } from 'react-native-paper'
+
+const getPosts = (first: number, skip: number) => gql`
+  query PostsPagination {
+    posts(first: ${first}, skip: ${skip}, orderBy: publishedAt_DESC) {
+      id
+      excerpt
+      title
+      coverImage {
+        url
+      }
+      publishedAt
+    }
+  }
+`
 
 export default function TipsRecyclePage({ navigation }) {
+  const [page] = useState<number>(0)
+  const [postsPerPage] = useState<number>(4)
+
+  const { data } = useQuery<getPostsResponse>(
+    getPosts(postsPerPage, page * postsPerPage),
+  )
+
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
@@ -34,12 +57,16 @@ export default function TipsRecyclePage({ navigation }) {
           Dicas de Reciclagem
         </Text>
       </View>
-      <FlatList
-        data={TipsList}
-        showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => <PostCard post={item} />}
-        className="px-5"
-      />
+      {data && !data.posts ? (
+        <FlatList
+          data={data.posts}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => <PostCard post={item} />}
+          className="px-5"
+        />
+      ) : (
+        <ActivityIndicator size="large" color="#576032" className="my-auto" />
+      )}
     </View>
   )
 }

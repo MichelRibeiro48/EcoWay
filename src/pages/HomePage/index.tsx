@@ -21,12 +21,33 @@ import {
   requestForegroundPermissionsAsync,
 } from 'expo-location'
 import LogoHomeSvg from '../../assets/logohome.svg'
-import TipsList from './mockTips'
 import styles from './styles'
 import { PostCard } from '../../components/PostCard'
+import { gql, useQuery } from '@apollo/client'
+import { IPost } from '../../@types/IPost'
+import { ActivityIndicator } from 'react-native-paper'
+
+const getPosts = gql`
+  query PostsPagination {
+    posts(first: 2, skip: 0, orderBy: publishedAt_DESC) {
+      id
+      excerpt
+      title
+      coverImage {
+        url
+      }
+      publishedAt
+    }
+  }
+`
+
+export interface getPostsResponse {
+  posts: IPost[]
+}
 
 export default function HomePage({ navigation }) {
   const [location, setLocation] = useState<LocationObject | null>(null)
+  const { data } = useQuery<getPostsResponse>(getPosts)
 
   const initialLocation = {
     latitude: location?.coords.latitude,
@@ -61,10 +82,10 @@ export default function HomePage({ navigation }) {
   }
   return (
     <ScrollView className="bg-Green">
-      <View className="bg-Green">
+      <View>
         <LogoHomeSvg width={'100%'} height={280} />
       </View>
-      <View className="items-center py-6 px-5 bg-White border-t-2 border-Green rounded-t-3xl">
+      <View className="items-center py-6 px-5 bg-White rounded-t-3xl min-h-screen">
         <TouchableOpacity
           style={[
             Platform.OS === 'android' ? { elevation: 10 } : styles.IosShadow,
@@ -99,21 +120,27 @@ export default function HomePage({ navigation }) {
         >
           Dicas de reciclagem
         </Text>
-        <FlatList
-          data={TipsList.slice(0, 2)}
-          renderItem={({ item }) => <PostCard post={item} />}
-          className="w-full overflow-visible"
-        />
-        <TouchableOpacity
-          onPress={() => navigation.navigate('TipsRecyclePage')}
-        >
-          <Text
-            className="mb-8 text-Green text-base"
-            style={{ fontFamily: 'Roboto_500Medium' }}
-          >
-            Ver mais!
-          </Text>
-        </TouchableOpacity>
+        {data && data.posts ? (
+          <>
+            <FlatList
+              data={data.posts.slice(0, 2)}
+              renderItem={({ item }) => <PostCard post={item} />}
+              className="w-full overflow-visible"
+            />
+            <TouchableOpacity
+              onPress={() => navigation.navigate('TipsRecyclePage')}
+            >
+              <Text
+                className="mb-8 text-Green text-base"
+                style={{ fontFamily: 'Roboto_500Medium' }}
+              >
+                Ver mais!
+              </Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <ActivityIndicator size="large" color="#576032" />
+        )}
       </View>
     </ScrollView>
   )

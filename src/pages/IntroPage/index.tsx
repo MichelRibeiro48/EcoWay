@@ -3,26 +3,9 @@ import BackgroundSvg from '../../assets/background.svg'
 import styles from '../PointAbout/styles'
 import { View, Text, TouchableOpacity, Platform } from 'react-native'
 import { TextDesc } from './TextDesc'
-import { gql, useQuery } from '@apollo/client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-const getPosts = gql`
-  query PostsPagination {
-    posts {
-      id
-      excerpt
-      title
-      createdAt
-      coverImage {
-        url
-      }
-    }
-  }
-`
-
 export default function IntroPage({ navigation }) {
-  const data = useQuery(getPosts)
-
   const shouldShowIntroPage = useCallback(async () => {
     const storageData = await AsyncStorage.getItem('intro')
 
