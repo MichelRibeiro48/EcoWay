@@ -6,6 +6,7 @@ import {
   Platform,
   FlatList,
   TouchableOpacity,
+  Linking,
 } from 'react-native'
 import {
   useFonts,
@@ -64,6 +65,12 @@ export default function PointAbout({ navigation, route }) {
     Roboto_100Thin_Italic,
     Roboto_500Medium,
   })
+
+  const mapsURL = Platform.select({
+    ios: `maps:${-1.4385271},${48.4786195}`,
+    android: `geo:${-1.4385271},${48.4786195}`,
+  })
+
   if (!fontsLoaded) {
     return
   }
