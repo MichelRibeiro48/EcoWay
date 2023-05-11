@@ -174,7 +174,7 @@ export default function LoginPage({ navigation }) {
           displayName="Entrar com o google"
           greenMode={false}
           onPress={onOAuthButtonPress}
-          sizeButton="large"
+          sizeButton="medium"
           iconNameE="google"
           sizeIcon={20}
           loading={loading}

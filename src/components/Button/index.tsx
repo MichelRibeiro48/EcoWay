@@ -41,13 +41,13 @@ export default function Button({
   return (
     <TouchableOpacity
       className={classNames(
-        `bg-Title h-12 px-6 items-center justify-center rounded-xl`,
+        `bg-Title py-[15] items-center justify-center rounded-xl`,
         {
           'bg-Grey': loading,
           'bg-Green': greenMode,
           'w-16': sizeButton === 'small',
-          'w-28': sizeButton === 'medium',
-          'w-10/12': sizeButton === 'large',
+          'px-24': sizeButton === 'medium',
+          'px-[152]': sizeButton === 'large' || loading,
           'mb-8': displayName === 'Login',
         }
       )}
