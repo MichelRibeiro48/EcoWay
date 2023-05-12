@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "EcoWay",
-    "slug": "EcoWay",
+    "name": "LanyImportante",
+    "slug": "Importante",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/adaptive-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#576032"
+      "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -22,14 +22,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.michside.EcoWay"
+      "package": "com.michside.Importante"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "621919ce-e29b-4095-ae09-6f6ec1261353"
+        "projectId": "7acb8425-c74f-4ad2-a16f-7c20431ed537"
       }
     }
   }
