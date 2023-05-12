@@ -49,7 +49,7 @@ export default function Button({
           'px-24': sizeButton === 'medium',
           'px-[152]': sizeButton === 'large' || loading,
           'mb-8': displayName === 'Login',
-        }
+        },
       )}
       disabled={loading}
       style={[

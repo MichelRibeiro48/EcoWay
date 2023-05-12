@@ -17,6 +17,8 @@ export type getSinglePoint = {
     }[]
     geoCoordinates: {
       distance: number
+      latitude: number
+      longitude: number
     }
   }
 }

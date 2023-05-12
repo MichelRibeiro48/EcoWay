@@ -1,5 +1,5 @@
 import { useAuth, useUser } from '@clerk/clerk-expo'
-import { Modal, Text, View, Image, Pressable } from 'react-native'
+import { Modal, Text, View, Image } from 'react-native'
 import Button from '../Button'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../routes/routes'
@@ -8,17 +8,11 @@ import { useNavigation } from '@react-navigation/native'
 interface ModalLogoutProps {
   visible: boolean
   closeModal: () => void
-  name: string
-  loading: boolean
 }
 
-export default function ModalLogout({
-  visible,
-  closeModal,
-  loading,
-}: ModalLogoutProps) {
+export default function ModalLogout({ visible, closeModal }: ModalLogoutProps) {
   const { user } = useUser()
-  const { signOut } = useAuth()
+  const { signOut, isLoaded } = useAuth()
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   return (
@@ -40,7 +34,7 @@ export default function ModalLogout({
             iconNameI="exit-outline"
             sizeIcon={20}
             sizeButton="medium"
-            loading={loading}
+            loading={isLoaded}
           />
         </View>
       </View>

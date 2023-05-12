@@ -5,7 +5,7 @@ import Button from '../../components/Button'
 import { useState } from 'react'
 
 export default function ProfilePage({ navigation }) {
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
   const { user } = useUser()
   const { signOut } = useClerk()
   const onSignout = async () => {

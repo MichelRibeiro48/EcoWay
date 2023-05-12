@@ -16,7 +16,7 @@ export default function CardLocation({
           'border-Red': numberReported > 8,
           'border-Yellow': numberReported >= 5 && numberReported <= 8,
           'border-LightGreen': numberReported < 5,
-        }
+        },
       )}
       style={
         Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow

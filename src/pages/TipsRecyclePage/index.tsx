@@ -32,6 +32,7 @@ export default function TipsRecyclePage({ navigation }) {
   const { data } = useQuery<getPostsResponse>(
     getPosts(postsPerPage, page * postsPerPage),
   )
+  console.log(data)
 
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
@@ -57,7 +58,7 @@ export default function TipsRecyclePage({ navigation }) {
           Dicas de Reciclagem
         </Text>
       </View>
-      {data && !data.posts ? (
+      {data && data.posts ? (
         <FlatList
           data={data.posts}
           showsVerticalScrollIndicator={false}
