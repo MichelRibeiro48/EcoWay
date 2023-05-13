@@ -25,6 +25,7 @@ import { ActivityIndicator } from 'react-native-paper'
 import TypeRecycle from '../../components/TypeRecycle'
 import { STATUS_COLORS } from '../../utils/statusColors'
 import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
+import { LocationStatus } from '../../@types/locationStatus'
 
 const days = {
   0: 'domingo',
@@ -66,7 +67,9 @@ export default function PointAbout({ navigation, route }) {
   const { data } = useQuery<getSinglePoint>(getCollectPoint, {
     variables: id,
   })
-  const status = getStatusOfOneLocation(data.collectPoint.reports)
+  const status: LocationStatus = data
+    ? getStatusOfOneLocation(data.collectPoint.reports)
+    : 'empty'
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
@@ -111,17 +114,17 @@ export default function PointAbout({ navigation, route }) {
             >
               <View>
                 <Text className="mb-1">Status</Text>
-                <View className="flex-row">
+                <View className="flex-row items-center">
                   <IconC
                     name="circle"
                     size={16}
                     color={STATUS_COLORS[status]}
                   />
-                  <Text className="ml-1">{status}</Text>
+                  <Text className="ml-2">{status}</Text>
                 </View>
               </View>
               <View className="h-2/3 w-px bg-Black ml-3 mt-1" />
-              <View className="ml-4">
+              <View className="ml-4 items-center">
                 <Text>Horário de coleta</Text>
                 <View className="flex-row justify-center mt-1">
                   <IconR name="clockcircleo" size={16} color={'#777777'} />

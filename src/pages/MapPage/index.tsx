@@ -18,6 +18,7 @@ import classNames from 'classnames'
 import { gql, useQuery } from '@apollo/client'
 import { MapPoint } from './types'
 import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
+import { LocationStatus } from '../../@types/locationStatus'
 
 const mapPoint = gql`
   query PointMarker($country: String!, $latitude: Float!, $longitude: Float!) {
@@ -128,7 +129,10 @@ export default function MapPage({ navigation }) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => {
-            const status = getStatusOfOneLocation(item.reports)
+            const status: LocationStatus = data
+              ? getStatusOfOneLocation(item.reports)
+              : 'empty'
+
             return (
               <TouchableOpacity
                 onPress={() =>
