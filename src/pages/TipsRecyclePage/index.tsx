@@ -1,5 +1,11 @@
 import React, { useState } from 'react'
-import { View, Text, FlatList, TouchableOpacity } from 'react-native'
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native'
 import IconI from '@expo/vector-icons/Ionicons'
 import {
   useFonts,
@@ -29,7 +35,7 @@ export default function TipsRecyclePage({ navigation }) {
   const [page] = useState<number>(0)
   const [postsPerPage] = useState<number>(4)
 
-  const { data } = useQuery<getPostsResponse>(
+  const { data, refetch, loading } = useQuery<getPostsResponse>(
     getPosts(postsPerPage, page * postsPerPage),
   )
 
@@ -63,6 +69,9 @@ export default function TipsRecyclePage({ navigation }) {
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <PostCard post={item} />}
           className="px-5"
+          refreshControl={
+            <RefreshControl refreshing={loading} onRefresh={refetch} />
+          }
         />
       ) : (
         <ActivityIndicator size="large" color="#576032" className="my-auto" />

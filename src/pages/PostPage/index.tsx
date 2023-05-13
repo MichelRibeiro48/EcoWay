@@ -1,5 +1,12 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  RefreshControl,
+} from 'react-native'
 import IconI from '@expo/vector-icons/Ionicons'
 import {
   useFonts,
@@ -10,7 +17,7 @@ import {
 } from '@expo-google-fonts/roboto'
 import { gql, useQuery } from '@apollo/client'
 import { ActivityIndicator } from 'react-native-paper'
-import Markdown from '@ronradtke/react-native-markdown-display'
+import Markdown from 'react-native-marked'
 import dayjs from 'dayjs'
 
 export interface Post {
@@ -57,7 +64,7 @@ const getPost = (id: string) => gql`
 
 export default function PostPage({ navigation, route }) {
   const postId = route.params.postId as string
-  const { data } = useQuery(getPost(postId))
+  const { data, refetch, loading } = useQuery(getPost(postId))
   const post = data?.post as Post
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
@@ -81,7 +88,12 @@ export default function PostPage({ navigation, route }) {
       <TouchableOpacity onPress={() => navigation.goBack()} className="m-3">
         <IconI name="chevron-back-outline" size={32} color={'#576032'} />
       </TouchableOpacity>
-      <ScrollView className="flex-1">
+      <ScrollView
+        className="flex-1"
+        refreshControl={
+          <RefreshControl onRefresh={refetch} refreshing={loading} />
+        }
+      >
         <Image
           source={{ uri: post.coverImage.url }}
           className="w-full h-60 my-9 mb-4"
@@ -115,7 +127,20 @@ export default function PostPage({ navigation, route }) {
           >
             {post.title}
           </Text>
-          <Markdown>{post.content.markdown}</Markdown>
+          <Markdown
+            value={post.content.markdown}
+            flatListProps={{ style: { backgroundColor: 'transparent' } }}
+            styles={{}}
+            theme={{
+              colors: {
+                border: 'transparent',
+                background: '',
+                code: '',
+                link: '',
+                text: '',
+              },
+            }}
+          />
         </View>
       </ScrollView>
     </View>
