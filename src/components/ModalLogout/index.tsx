@@ -34,7 +34,6 @@ export default function ModalLogout({ visible, closeModal }: ModalLogoutProps) {
             iconNameI="exit-outline"
             sizeIcon={20}
             sizeButton="medium"
-            loading={isLoaded}
           />
         </View>
       </View>
