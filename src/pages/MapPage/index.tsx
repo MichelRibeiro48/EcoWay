@@ -16,6 +16,9 @@ import IconH from '@expo/vector-icons/FontAwesome5'
 import IconE from '@expo/vector-icons/Entypo'
 import classNames from 'classnames'
 import { gql, useQuery } from '@apollo/client'
+import { MapPoint } from './types'
+import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
+import { LocationStatus } from '../../@types/locationStatus'
 
 const mapPoint = gql`
   query PointMarker($country: String!, $latitude: Float!, $longitude: Float!) {
@@ -23,7 +26,7 @@ const mapPoint = gql`
       id
       name
       reports {
-        id
+        locationStatusType
       }
       geoCoordinates {
         distance(from: { latitude: $latitude, longitude: $longitude })
@@ -66,13 +69,14 @@ export default function MapPage({ navigation }) {
       setLocation(currentPosition)
     }
   }
-  const { data } = useQuery(mapPoint, {
+  const { data } = useQuery<MapPoint>(mapPoint, {
     variables: {
       country,
       latitude: location?.coords.latitude,
       longitude: location?.coords.longitude,
     },
   })
+
   useEffect(() => {
     requestLocationPermission()
   }, [])
@@ -124,53 +128,58 @@ export default function MapPage({ navigation }) {
           data={data?.collectPoints}
           horizontal
           showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('PointAbout', {
-                  id: item.id,
-                  distance: String(
-                    item.geoCoordinates.distance.toFixed() / 100,
-                  ).substring(0, 2),
-                })
-              }
-              className={classNames(
-                `w-56 h-full bg-White ml-4 justify-center border-Red border-b-4 flex-row items-center rounded-xl`,
-                {
-                  'border-Red': item.reports.length > 8,
-                  'border-Yellow':
-                    item.reports.length >= 5 && item.reports.length <= 8,
-                  'border-Green': item.reports.length < 5,
-                },
-              )}
-            >
-              <Image
-                source={{ uri: item.placeImages[0].url }}
-                className="w-10 h-12 ml-4"
-              />
-              <View>
-                <Text
-                  numberOfLines={1}
-                  className="w-40 text-xl"
-                  style={{ fontFamily: 'Roboto_100Thin_Italic' }}
-                >
-                  {item.name}
-                </Text>
-                <View className="flex-row">
-                  <IconE name="location-pin" color={'#576032'} size={15} />
+          renderItem={({ item }) => {
+            const status: LocationStatus = data
+              ? getStatusOfOneLocation(item.reports)
+              : 'empty'
+
+            return (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('PointAbout', {
+                    id: item.id,
+                    distance: String(
+                      (item.geoCoordinates.distance / 100).toFixed(),
+                    ).substring(0, 2),
+                  })
+                }
+                className={classNames(
+                  `w-56 h-full bg-White ml-4 justify-center border-Red border-b-4 flex-row items-center rounded-xl`,
+                  {
+                    'border-Red': status === 'full',
+                    'border-Yellow': status === 'partially_full',
+                    'border-LightGreen': status === 'empty',
+                  },
+                )}
+              >
+                <Image
+                  source={{ uri: item.placeImages[0].url }}
+                  className="w-12 h-12 mx-3 rounded"
+                />
+                <View>
                   <Text
-                    className="text-Grey text-xs"
-                    style={{ fontFamily: 'Roboto_500Medium' }}
+                    numberOfLines={1}
+                    className="w-40 text-xl"
+                    style={{ fontFamily: 'Roboto_100Thin_Italic' }}
                   >
-                    {String(
-                      item.geoCoordinates.distance.toFixed() / 100,
-                    ).substring(0, 2)}
-                    KM Restantes
+                    {item.name}
                   </Text>
+                  <View className="flex-row">
+                    <IconE name="location-pin" color={'#576032'} size={15} />
+                    <Text
+                      className="text-Grey text-xs"
+                      style={{ fontFamily: 'Roboto_500Medium' }}
+                    >
+                      {String(
+                        (item.geoCoordinates.distance / 100).toFixed(),
+                      ).substring(0, 2)}
+                      KM Restantes
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          )}
+              </TouchableOpacity>
+            )
+          }}
         />
       </View>
       <TouchableOpacity

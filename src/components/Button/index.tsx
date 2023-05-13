@@ -19,6 +19,7 @@ type ButtonProps = {
   onlyIcon?: boolean
   sizeButton: 'small' | 'medium' | 'large'
   loading?: boolean
+  fullWidth?: boolean
   onPress: () => void
 }
 export default function Button({
@@ -30,6 +31,7 @@ export default function Button({
   iconNameI,
   displayName,
   greenMode,
+  fullWidth,
 }: ButtonProps) {
   const [fontsLoaded] = useFonts({
     Roboto_700Bold,
@@ -49,6 +51,7 @@ export default function Button({
           'px-24': sizeButton === 'medium',
           'px-[152]': sizeButton === 'large' || loading,
           'mb-8': displayName === 'Login',
+          'w-full': fullWidth,
         },
       )}
       disabled={loading}

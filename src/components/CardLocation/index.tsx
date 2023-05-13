@@ -1,21 +1,22 @@
 import styles from './styles'
 import { Platform, View, Image, Text } from 'react-native'
 import classNames from 'classnames'
+import { CardLocationProps } from './types'
 
 export default function CardLocation({
-  numberReported,
+  status,
   title,
   image,
   distance,
-}) {
+}: CardLocationProps) {
   return (
     <View
       className={classNames(
         `w-full bg-White border-b-4 py-3 px-4 flex-row items-center rounded-xl justify-between`,
         {
-          'border-Red': numberReported > 8,
-          'border-Yellow': numberReported >= 5 && numberReported <= 8,
-          'border-LightGreen': numberReported < 5,
+          'border-Red': status === 'full',
+          'border-Yellow': status === 'partially_full',
+          'border-LightGreen': status === 'empty',
         },
       )}
       style={
