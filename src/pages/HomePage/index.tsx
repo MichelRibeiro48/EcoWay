@@ -116,11 +116,9 @@ export default function HomePage({ navigation }) {
         </Text>
         {data && data.posts ? (
           <>
-            <FlatList
-              data={data.posts.slice(0, 2)}
-              renderItem={({ item }) => <PostCard post={item} />}
-              className="w-full overflow-visible"
-            />
+            {data.posts.map((post, index) => {
+              return <PostCard post={post} key={index} />
+            })}
             <TouchableOpacity
               onPress={() => navigation.navigate('TipsRecyclePage')}
             >
