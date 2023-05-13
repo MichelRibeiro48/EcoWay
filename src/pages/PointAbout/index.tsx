@@ -86,6 +86,7 @@ export default function PointAbout({ navigation, route }) {
             source={{
               uri: 'https://w0.peakpx.com/wallpaper/759/715/HD-wallpaper-park-trees-grass-green-nature.jpg',
             }}
+            alt="forest wallpaper"
           />
           <View className="w-11/12 bg-White absolute self-center p-6 flex-col rounded-xl">
             <CardLocation

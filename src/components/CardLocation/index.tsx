@@ -22,7 +22,7 @@ export default function CardLocation({
         Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow
       }
     >
-      <Image source={{ uri: image }} className="w-14 h-14 mr-2" />
+      <Image source={{ uri: image }} className="w-14 h-14 mr-2" alt="" />
       <View className="flex-col">
         <Text
           style={{

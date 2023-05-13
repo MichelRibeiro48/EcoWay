@@ -56,7 +56,7 @@ export default function LoginPage({ navigation }) {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [startOAuthFlow])
 
   const onSignInPress = async () => {
     setLoading(true)
