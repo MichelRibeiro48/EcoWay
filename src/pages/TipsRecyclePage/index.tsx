@@ -32,7 +32,6 @@ export default function TipsRecyclePage({ navigation }) {
   const { data } = useQuery<getPostsResponse>(
     getPosts(postsPerPage, page * postsPerPage),
   )
-  console.log(data)
 
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,

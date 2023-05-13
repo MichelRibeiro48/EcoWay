@@ -98,7 +98,6 @@ export default function MapPage({ navigation }) {
           }}
         >
           {data?.collectPoints.map((marker, index) => {
-            console.log(marker.geoCoordinates.latitude)
             return (
               <Marker
                 key={index}
@@ -117,7 +116,6 @@ export default function MapPage({ navigation }) {
               longitude: location.coords.longitude,
             }}
             image={require('../../assets/gps.png')}
-            onPress={() => console.log('teste')}
           />
         </MapView>
       )}
