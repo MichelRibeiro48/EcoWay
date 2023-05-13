@@ -2,7 +2,12 @@ import styles from './styles'
 import { Platform, View, Image, Text } from 'react-native'
 import classNames from 'classnames'
 
-export default function CardLocation({ numberReported, title, image }) {
+export default function CardLocation({
+  numberReported,
+  title,
+  image,
+  distance,
+}) {
   return (
     <View
       className={classNames(
@@ -10,14 +15,14 @@ export default function CardLocation({ numberReported, title, image }) {
         {
           'border-Red': numberReported > 8,
           'border-Yellow': numberReported >= 5 && numberReported <= 8,
-          'border-Green': numberReported < 5,
+          'border-LightGreen': numberReported < 5,
         },
       )}
       style={
         Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow
       }
     >
-      <Image source={image} className="w-14 h-20  mr-2" />
+      <Image source={{ uri: image }} className="w-14 h-14 mr-2" />
       <View className="flex-col">
         <Text
           style={{
@@ -33,7 +38,7 @@ export default function CardLocation({ numberReported, title, image }) {
           style={{ fontFamily: 'Roboto_500Medium' }}
           className="text-sm text-Grey"
         >
-          10 Mtr restantes
+          {distance} KM restantes
         </Text>
       </View>
     </View>

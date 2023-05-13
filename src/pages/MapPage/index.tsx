@@ -1,6 +1,7 @@
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
+  reverseGeocodeAsync,
 } from 'expo-location'
 import { LocationObject } from 'expo-location/build/Location.types'
 import React, { useEffect, useRef, useState } from 'react'
@@ -12,11 +13,33 @@ import {
 import { Text, View, Image, TouchableOpacity, FlatList } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 import IconH from '@expo/vector-icons/FontAwesome5'
-import MarkerList from './mockMarker'
+import IconE from '@expo/vector-icons/Entypo'
 import classNames from 'classnames'
+import { gql, useQuery } from '@apollo/client'
 
+const mapPoint = gql`
+  query PointMarker($country: String!, $latitude: Float!, $longitude: Float!) {
+    collectPoints(where: { state: $country }) {
+      id
+      name
+      reports {
+        id
+      }
+      geoCoordinates {
+        distance(from: { latitude: $latitude, longitude: $longitude })
+        latitude
+        longitude
+      }
+      placeImages {
+        url
+      }
+    }
+  }
+`
 export default function MapPage({ navigation }) {
   const [location, setLocation] = useState<LocationObject | null>(null)
+  const [country, setCountry] = useState('')
+
   const mapRef = useRef(null)
   const initialLocation = {
     latitude: location?.coords.latitude,
@@ -24,7 +47,6 @@ export default function MapPage({ navigation }) {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   }
-  console.log(initialLocation)
 
   function goToInitialLocation() {
     mapRef.current.animateToRegion(initialLocation, 3 * 1000)
@@ -34,9 +56,23 @@ export default function MapPage({ navigation }) {
 
     if (granted) {
       const currentPosition = await getCurrentPositionAsync()
+      if (currentPosition) {
+        const currentCountry = await reverseGeocodeAsync({
+          latitude: currentPosition.coords.latitude,
+          longitude: currentPosition.coords.longitude,
+        })
+        setCountry(currentCountry[0].region.toLowerCase())
+      }
       setLocation(currentPosition)
     }
   }
+  const { data } = useQuery(mapPoint, {
+    variables: {
+      country,
+      latitude: location?.coords.latitude,
+      longitude: location?.coords.longitude,
+    },
+  })
   useEffect(() => {
     requestLocationPermission()
   }, [])
@@ -61,11 +97,14 @@ export default function MapPage({ navigation }) {
             longitudeDelta: 0.01,
           }}
         >
-          {MarkerList.map((marker, index) => {
+          {data?.collectPoints.map((marker, index) => {
             return (
               <Marker
                 key={index}
-                coordinate={marker.coordinate}
+                coordinate={{
+                  latitude: marker.geoCoordinates.latitude,
+                  longitude: marker.geoCoordinates.longitude,
+                }}
                 image={require('../../assets/markerOff.png')}
                 onPress={() => navigation.navigate('PointAbout', marker)}
               />
@@ -77,36 +116,59 @@ export default function MapPage({ navigation }) {
               longitude: location.coords.longitude,
             }}
             image={require('../../assets/gps.png')}
-            onPress={() => console.log('teste')}
           />
         </MapView>
       )}
       <View className="absolute bottom-24 h-20">
         <FlatList
-          data={MarkerList}
+          data={data?.collectPoints}
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => navigation.navigate('PointAbout', item)}
+              onPress={() =>
+                navigation.navigate('PointAbout', {
+                  id: item.id,
+                  distance: String(
+                    item.geoCoordinates.distance.toFixed() / 100,
+                  ).substring(0, 2),
+                })
+              }
               className={classNames(
                 `w-56 h-full bg-White ml-4 justify-center border-Red border-b-4 flex-row items-center rounded-xl`,
                 {
-                  'border-Red': item.numberReported > 8,
+                  'border-Red': item.reports.length > 8,
                   'border-Yellow':
-                    item.numberReported >= 5 && item.numberReported <= 8,
-                  'border-Green': item.numberReported < 5,
+                    item.reports.length >= 5 && item.reports.length <= 8,
+                  'border-Green': item.reports.length < 5,
                 },
               )}
             >
-              <Image source={item.image} className="w-10 h-12" />
-              <Text
-                numberOfLines={1}
-                className="w-40 text-xl"
-                style={{ fontFamily: 'Roboto_100Thin_Italic' }}
-              >
-                {item.title}
-              </Text>
+              <Image
+                source={{ uri: item.placeImages[0].url }}
+                className="w-10 h-12 ml-4"
+              />
+              <View>
+                <Text
+                  numberOfLines={1}
+                  className="w-40 text-xl"
+                  style={{ fontFamily: 'Roboto_100Thin_Italic' }}
+                >
+                  {item.name}
+                </Text>
+                <View className="flex-row">
+                  <IconE name="location-pin" color={'#576032'} size={15} />
+                  <Text
+                    className="text-Grey text-xs"
+                    style={{ fontFamily: 'Roboto_500Medium' }}
+                  >
+                    {String(
+                      item.geoCoordinates.distance.toFixed() / 100,
+                    ).substring(0, 2)}
+                    KM Restantes
+                  </Text>
+                </View>
+              </View>
             </TouchableOpacity>
           )}
         />

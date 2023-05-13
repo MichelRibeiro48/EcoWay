@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Platform,
-  Pressable,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native'
+import { View, Text, TextInput, Pressable, ScrollView } from 'react-native'
 import { useOAuth, useSession, useSignIn } from '@clerk/clerk-expo'
 import BackgroundSvg from '../../assets/background.svg'
-import styles from '../PointAbout/styles'
-import Icon from '@expo/vector-icons/AntDesign'
 import IconE from '@expo/vector-icons/Entypo'
 import { maybeCompleteAuthSession } from 'expo-web-browser'
 import { useWarmUpBrowser } from '../../hooks/clerk'
 import classNames from 'classnames'
+import Button from '../../components/Button'
+import {
+  useFonts,
+  Roboto_100Thin_Italic,
+  Roboto_500Medium,
+  Roboto_400Regular,
+  Roboto_700Bold,
+} from '@expo-google-fonts/roboto'
 
 maybeCompleteAuthSession()
 
@@ -45,6 +42,7 @@ export default function LoginPage({ navigation }) {
   const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' })
 
   const onOAuthButtonPress = React.useCallback(async () => {
+    setLoading(true)
     try {
       const { createdSessionId, setActive } = await startOAuthFlow()
 
@@ -55,6 +53,8 @@ export default function LoginPage({ navigation }) {
       }
     } catch (err) {
       console.error('OAuth error', JSON.stringify(err))
+    } finally {
+      setLoading(false)
     }
   }, [])
 
@@ -94,6 +94,17 @@ export default function LoginPage({ navigation }) {
   useEffect(() => {
     if (session) navigation.replace('HomePage')
   }, [navigation, session])
+
+  const [fontsLoaded] = useFonts({
+    Roboto_100Thin_Italic,
+    Roboto_500Medium,
+    Roboto_400Regular,
+    Roboto_700Bold,
+  })
+
+  if (!fontsLoaded) {
+    return
+  }
 
   return (
     <ScrollView className="flex-1 bg-Green">
@@ -147,40 +158,32 @@ export default function LoginPage({ navigation }) {
         {errorPassword && (
           <Text className="self-start ml-10 text-Yellow">{errorPassword}</Text>
         )}
-        <View className="w-10/12 h-px mt-4 bg-Title" />
-        <TouchableOpacity
-          className="mt-4 bg-Title w-10/12 h-12 px-6 items-center justify-center rounded-xl flex-row"
-          style={[
-            Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
-          ]}
-          onPress={() => onOAuthButtonPress()}
-        >
-          <Icon name="google" size={20} />
-          <Text className="ml-2">Entrar com o google</Text>
-        </TouchableOpacity>
-        <Pressable className="mt-6">
+        <View className="w-10/12 h-px my-6 bg-Title" />
+        <Button
+          displayName="Entrar com o google"
+          greenMode={false}
+          onPress={onOAuthButtonPress}
+          sizeButton="medium"
+          iconNameE="google"
+          sizeIcon={20}
+          loading={loading}
+        />
+        <Pressable>
           <Text
-            className=" text-White"
+            className="text-White mb-[69] mt-6"
+            style={{ fontFamily: 'Roboto_700Bold' }}
             onPress={() => navigation.navigate('RegisterPage')}
           >
             Não possui cadastro? clique aqui
           </Text>
         </Pressable>
-        <TouchableOpacity
-          className={classNames(
-            `my-8 bg-Title w-10/12 h-12 px-6 items-center justify-center rounded-xl`,
-            {
-              'bg-Grey': loading,
-            },
-          )}
-          disabled={loading}
-          style={[
-            Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
-          ]}
-          onPress={() => onSignInPress}
-        >
-          {loading ? <ActivityIndicator color={'white'} /> : <Text>Login</Text>}
-        </TouchableOpacity>
+        <Button
+          displayName="Login"
+          greenMode={false}
+          onPress={onSignInPress}
+          sizeButton="large"
+          loading={loading}
+        />
       </View>
     </ScrollView>
   )

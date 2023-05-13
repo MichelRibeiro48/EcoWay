@@ -63,7 +63,7 @@ export default function TipsRecyclePage({ navigation }) {
           Dicas de Reciclagem
         </Text>
       </View>
-      {data && !data.posts ? (
+      {data && data.posts ? (
         <FlatList
           data={data.posts}
           showsVerticalScrollIndicator={false}

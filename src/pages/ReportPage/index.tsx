@@ -19,8 +19,33 @@ import styles from './styles'
 import CardLocation from '../../components/CardLocation'
 import { RadioButton } from 'react-native-paper'
 import * as ImagePicker from 'expo-image-picker'
+import { gql, useQuery } from '@apollo/client'
+import { getSinglePoint } from '../PointAbout/types'
+
+const getCollectPoint = gql`
+  query MyQuery($id: ID) {
+    collectPoint(where: { id: $id }) {
+      street
+      placeCollectTypes
+      collectDays {
+        day
+        initialCollectTimeInMinutes
+        finalCollectTimeInMinutes
+      }
+      name
+      placeImages {
+        url
+      }
+      reports {
+        id
+      }
+    }
+  }
+`
 
 export default function ReportPage({ navigation, route }) {
+  const { id, distance } = route.params
+  const { data } = useQuery<getSinglePoint>(getCollectPoint, { variables: id })
   const [checked, setChecked] = useState('')
   const [imageCamera, setImageCamera] = useState(null)
   const [fontsLoaded] = useFonts({
@@ -32,7 +57,6 @@ export default function ReportPage({ navigation, route }) {
   if (!fontsLoaded) {
     return
   }
-  const { title, image, numberReported } = route.params
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -56,9 +80,10 @@ export default function ReportPage({ navigation, route }) {
       />
       <View className="w-11/12 h-5/6 bg-White absolute self-center p-6 flex-col rounded-xl">
         <CardLocation
-          image={image}
-          numberReported={numberReported}
-          title={title}
+          distance={distance}
+          image={data.collectPoint.placeImages[0].url}
+          numberReported={data.collectPoint.reports.length}
+          title={data.collectPoint.name}
         />
         <View
           className="w-full h-28 bg-White rounded-xl flex-row px-2 py-1 my-6"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
+  Pressable,
 } from 'react-native'
 import {
   useFonts,
@@ -15,17 +16,14 @@ import {
   Roboto_400Regular,
   Roboto_700Bold,
 } from '@expo-google-fonts/roboto'
-import {
-  LocationObject,
-  getCurrentPositionAsync,
-  requestForegroundPermissionsAsync,
-} from 'expo-location'
 import LogoHomeSvg from '../../assets/logohome.svg'
 import styles from './styles'
 import { PostCard } from '../../components/PostCard'
+import { useUser } from '@clerk/clerk-expo'
 import { gql, useQuery } from '@apollo/client'
 import { IPost } from '../../@types/IPost'
 import { ActivityIndicator } from 'react-native-paper'
+import ModalLogout from '../../components/ModalLogout'
 
 const getPosts = gql`
   query PostsPagination {
@@ -40,35 +38,14 @@ const getPosts = gql`
     }
   }
 `
-
 export interface getPostsResponse {
   posts: IPost[]
 }
 
 export default function HomePage({ navigation }) {
-  const [location, setLocation] = useState<LocationObject | null>(null)
+  const { user } = useUser()
   const { data } = useQuery<getPostsResponse>(getPosts)
-
-  const initialLocation = {
-    latitude: location?.coords.latitude,
-    longitude: location?.coords.longitude,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  }
-  console.log(initialLocation)
-
-  async function requestLocationPermission() {
-    const { granted } = await requestForegroundPermissionsAsync()
-
-    if (granted) {
-      const currentPosition = await getCurrentPositionAsync()
-      setLocation(currentPosition)
-    }
-  }
-
-  useEffect(() => {
-    requestLocationPermission()
-  }, [])
+  const [visible, setVisible] = useState(false)
 
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
@@ -82,7 +59,24 @@ export default function HomePage({ navigation }) {
   }
   return (
     <ScrollView className="bg-Green">
-      <View>
+      <Pressable
+        className="self-end mr-4 mt-11 flex-row items-center"
+        onPress={() => setVisible(!visible)}
+      >
+        <Text
+          className="text-White mr-2"
+          style={{ fontFamily: 'Roboto_700Bold' }}
+        >
+          Óla, {user?.firstName}
+        </Text>
+        <Image
+          source={{ uri: user?.profileImageUrl }}
+          alt="ImgProfile"
+          className="w-16 h-16 rounded-full"
+        />
+      </Pressable>
+      <ModalLogout visible={visible} closeModal={() => setVisible(!visible)} />
+      <View className="bg-Green">
         <LogoHomeSvg width={'100%'} height={280} />
       </View>
       <View className="items-center py-6 px-5 bg-White rounded-t-3xl min-h-screen">
@@ -122,11 +116,9 @@ export default function HomePage({ navigation }) {
         </Text>
         {data && data.posts ? (
           <>
-            <FlatList
-              data={data.posts.slice(0, 2)}
-              renderItem={({ item }) => <PostCard post={item} />}
-              className="w-full overflow-visible"
-            />
+            {data.posts.map((post, index) => {
+              return <PostCard post={post} key={index} />
+            })}
             <TouchableOpacity
               onPress={() => navigation.navigate('TipsRecyclePage')}
             >
