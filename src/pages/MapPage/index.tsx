@@ -11,7 +11,7 @@ import {
   Roboto_500Medium,
 } from '@expo-google-fonts/roboto'
 import { Text, View, Image, TouchableOpacity, FlatList } from 'react-native'
-import MapView, { Marker } from 'react-native-maps'
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import IconH from '@expo/vector-icons/FontAwesome5'
 import IconE from '@expo/vector-icons/Entypo'
 import classNames from 'classnames'
@@ -92,6 +92,7 @@ export default function MapPage({ navigation }) {
     <View>
       {location && (
         <MapView
+          provider={PROVIDER_GOOGLE}
           ref={mapRef}
           className="w-full h-full flex-col justify-end"
           initialRegion={{
