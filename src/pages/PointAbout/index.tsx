@@ -23,6 +23,8 @@ import { gql, useQuery } from '@apollo/client'
 import { getSinglePoint } from './types'
 import { ActivityIndicator } from 'react-native-paper'
 import TypeRecycle from '../../components/TypeRecycle'
+import { STATUS_COLORS } from '../../utils/statusColors'
+import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 
 const days = {
   0: 'domingo',
@@ -49,7 +51,7 @@ const getCollectPoint = gql`
         url
       }
       reports {
-        id
+        locationStatusType
       }
       geoCoordinates {
         distance(from: { latitude: 1.5, longitude: 1.5 })
@@ -61,7 +63,10 @@ const getCollectPoint = gql`
 `
 export default function PointAbout({ navigation, route }) {
   const id = route.params
-  const { data } = useQuery<getSinglePoint>(getCollectPoint, { variables: id })
+  const { data } = useQuery<getSinglePoint>(getCollectPoint, {
+    variables: id,
+  })
+  const status = getStatusOfOneLocation(data.collectPoint.reports)
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
@@ -75,6 +80,8 @@ export default function PointAbout({ navigation, route }) {
   if (!fontsLoaded) {
     return
   }
+
+  console.log(data?.collectPoint.reports)
   return (
     <View className="flex-1 justify-center">
       {!data?.collectPoint ? (
@@ -91,7 +98,7 @@ export default function PointAbout({ navigation, route }) {
             <CardLocation
               distance={id.distance}
               image={data.collectPoint.placeImages[0].url}
-              numberReported={data.collectPoint.reports.length}
+              status={status}
               title={data.collectPoint.name}
             />
             <View
@@ -108,21 +115,9 @@ export default function PointAbout({ navigation, route }) {
                   <IconC
                     name="circle"
                     size={16}
-                    color={
-                      data.collectPoint.reports.length > 8
-                        ? '#E13D3D'
-                        : data.collectPoint.reports.length < 5
-                        ? '#B6E13D'
-                        : '#E1B33D'
-                    }
+                    color={STATUS_COLORS[status]}
                   />
-                  <Text className="ml-1">
-                    {data.collectPoint.reports.length > 8
-                      ? 'Cheio'
-                      : data.collectPoint.reports.length < 5
-                      ? 'Vazio'
-                      : 'Quase'}
-                  </Text>
+                  <Text className="ml-1">{status}</Text>
                 </View>
               </View>
               <View className="h-2/3 w-px bg-Black ml-3 mt-1" />

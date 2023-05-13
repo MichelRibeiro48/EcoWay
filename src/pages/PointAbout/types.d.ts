@@ -1,3 +1,5 @@
+import { LocationStatus } from '../../@types/locationStatus'
+
 export type getSinglePoint = {
   collectPoint: {
     cep: string
@@ -13,7 +15,7 @@ export type getSinglePoint = {
       url: string
     }
     reports: {
-      id: string
+      locationStatusType: LocationStatus
     }[]
     geoCoordinates: {
       distance: number
