@@ -17,7 +17,7 @@ import IconR from '@expo/vector-icons/AntDesign'
 import IconF from '@expo/vector-icons/FontAwesome'
 import styles from './styles'
 import CardLocation from '../../components/CardLocation'
-import { RadioButton } from 'react-native-paper'
+import { ActivityIndicator, RadioButton } from 'react-native-paper'
 import * as ImagePicker from 'expo-image-picker'
 import { gql, useQuery } from '@apollo/client'
 import { getSinglePoint } from '../PointAbout/types'
@@ -26,6 +26,7 @@ import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 const getCollectPoint = gql`
   query MyQuery($id: ID) {
     collectPoint(where: { id: $id }) {
+      id
       street
       placeCollectTypes
       collectDays {
@@ -71,6 +72,11 @@ export default function ReportPage({ navigation, route }) {
       setImageCamera(result.assets[0].uri)
     }
   }
+
+  if (!data) {
+    return <ActivityIndicator size="large" color="#576032" />
+  }
+
   return (
     <View className="flex-1 justify-center">
       <Image
