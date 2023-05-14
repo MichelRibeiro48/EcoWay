@@ -12,7 +12,7 @@ interface ModalLogoutProps {
 
 export default function ModalLogout({ visible, closeModal }: ModalLogoutProps) {
   const { user } = useUser()
-  const { signOut, isLoaded } = useAuth()
+  const { signOut } = useAuth()
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   return (
@@ -22,6 +22,7 @@ export default function ModalLogout({ visible, closeModal }: ModalLogoutProps) {
           <Image
             source={{ uri: user?.profileImageUrl }}
             className="w-16 h-16 rounded-full mb-[10]"
+            alt="user image"
           />
           <Text className="mb-7">{user?.fullName}</Text>
           <Button

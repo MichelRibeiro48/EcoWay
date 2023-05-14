@@ -17,14 +17,16 @@ import IconR from '@expo/vector-icons/AntDesign'
 import IconF from '@expo/vector-icons/FontAwesome'
 import styles from './styles'
 import CardLocation from '../../components/CardLocation'
-import { RadioButton } from 'react-native-paper'
+import { ActivityIndicator, RadioButton } from 'react-native-paper'
 import * as ImagePicker from 'expo-image-picker'
 import { gql, useQuery } from '@apollo/client'
 import { getSinglePoint } from '../PointAbout/types'
+import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 
 const getCollectPoint = gql`
   query MyQuery($id: ID) {
     collectPoint(where: { id: $id }) {
+      id
       street
       placeCollectTypes
       collectDays {
@@ -70,6 +72,11 @@ export default function ReportPage({ navigation, route }) {
       setImageCamera(result.assets[0].uri)
     }
   }
+
+  if (!data) {
+    return <ActivityIndicator size="large" color="#576032" />
+  }
+
   return (
     <View className="flex-1 justify-center">
       <Image
@@ -77,12 +84,13 @@ export default function ReportPage({ navigation, route }) {
         source={{
           uri: 'https://w0.peakpx.com/wallpaper/759/715/HD-wallpaper-park-trees-grass-green-nature.jpg',
         }}
+        alt="forest wallpaper"
       />
       <View className="w-11/12 h-5/6 bg-White absolute self-center p-6 flex-col rounded-xl">
         <CardLocation
           distance={distance}
           image={data.collectPoint.placeImages[0].url}
-          numberReported={data.collectPoint.reports.length}
+          status={getStatusOfOneLocation(data.collectPoint.reports)}
           title={data.collectPoint.name}
         />
         <View

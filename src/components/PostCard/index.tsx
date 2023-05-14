@@ -19,6 +19,7 @@ export const PostCard = ({ post }: PostCartProps) => {
       <Image
         source={{ uri: post.coverImage.url }}
         className="w-full h-36 mb-2 self-center"
+        alt="post cover image"
       />
       <View className="ml-2">
         <Text

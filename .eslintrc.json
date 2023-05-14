@@ -3,6 +3,7 @@
   "rules": {
     "camelcase": "off",
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": ["error"]
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "jsx-a11y/alt-text": "off"
   }
 }
