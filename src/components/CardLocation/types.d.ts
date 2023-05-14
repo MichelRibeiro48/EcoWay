@@ -1,5 +1,7 @@
+import { LocationStatus } from '../../@types/locationStatus'
+
 export interface CardLocationProps {
-  status: 'partially_full' | 'full' | 'empty'
+  status: LocationStatus
   title: string
   image: string
   distance: number

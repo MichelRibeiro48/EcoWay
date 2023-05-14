@@ -21,6 +21,7 @@ import { RadioButton } from 'react-native-paper'
 import * as ImagePicker from 'expo-image-picker'
 import { gql, useQuery } from '@apollo/client'
 import { getSinglePoint } from '../PointAbout/types'
+import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 
 const getCollectPoint = gql`
   query MyQuery($id: ID) {
@@ -83,7 +84,7 @@ export default function ReportPage({ navigation, route }) {
         <CardLocation
           distance={distance}
           image={data.collectPoint.placeImages[0].url}
-          numberReported={data.collectPoint.reports.length}
+          status={getStatusOfOneLocation(data.collectPoint.reports)}
           title={data.collectPoint.name}
         />
         <View
