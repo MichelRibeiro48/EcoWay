@@ -84,6 +84,12 @@ export default function PointAbout({ navigation, route }) {
     return
   }
 
+  const translateStatus = {
+    empty: 'Vazio',
+    partially_full: 'Parcialmente Cheio',
+    full: 'Cheio',
+  }
+
   console.log(data?.collectPoint.reports)
   return (
     <View className="flex-1 justify-center">
@@ -114,14 +120,14 @@ export default function PointAbout({ navigation, route }) {
               ]}
             >
               <View>
-                <Text className="mb-1">Status</Text>
+                <Text className="mb-1 text-center">Status</Text>
                 <View className="flex-row items-center">
                   <IconC
                     name="circle"
                     size={16}
                     color={STATUS_COLORS[status]}
                   />
-                  <Text className="ml-2">{status}</Text>
+                  <Text className="ml-2">{translateStatus[status]}</Text>
                 </View>
               </View>
               <View className="h-2/3 w-px bg-Black ml-3 mt-1" />

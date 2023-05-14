@@ -14,6 +14,7 @@ import { Text, View, Image, TouchableOpacity, FlatList } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import IconH from '@expo/vector-icons/FontAwesome5'
 import IconE from '@expo/vector-icons/Entypo'
+import IconA from '@expo/vector-icons/AntDesign'
 import classNames from 'classnames'
 import { gql, useQuery } from '@apollo/client'
 import { MapPoint } from './types'
@@ -44,16 +45,6 @@ export default function MapPage({ navigation }) {
   const [country, setCountry] = useState('')
 
   const mapRef = useRef(null)
-  const initialLocation = {
-    latitude: location?.coords.latitude,
-    longitude: location?.coords.longitude,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  }
-
-  function goToInitialLocation() {
-    mapRef.current.animateToRegion(initialLocation, 3 * 1000)
-  }
   async function requestLocationPermission() {
     const { granted } = await requestForegroundPermissionsAsync()
 
@@ -69,6 +60,19 @@ export default function MapPage({ navigation }) {
       setLocation(currentPosition)
     }
   }
+  useEffect(() => {
+    requestLocationPermission()
+  }, [])
+  const initialLocation = {
+    latitude: location?.coords.latitude,
+    longitude: location?.coords.longitude,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  }
+
+  function goToInitialLocation() {
+    mapRef.current.animateToRegion(initialLocation, 3 * 1000)
+  }
   const { data } = useQuery<MapPoint>(mapPoint, {
     variables: {
       country,
@@ -76,10 +80,6 @@ export default function MapPage({ navigation }) {
       longitude: location?.coords.longitude,
     },
   })
-
-  useEffect(() => {
-    requestLocationPermission()
-  }, [])
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
@@ -94,6 +94,8 @@ export default function MapPage({ navigation }) {
         <MapView
           provider={PROVIDER_GOOGLE}
           ref={mapRef}
+          showsUserLocation={true}
+          followsUserLocation={true}
           className="w-full h-full flex-col justify-end"
           initialRegion={{
             latitude: location.coords.latitude,
@@ -115,13 +117,6 @@ export default function MapPage({ navigation }) {
               />
             )
           })}
-          <Marker
-            coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            }}
-            image={require('../../assets/gps.png')}
-          />
         </MapView>
       )}
       <View className="absolute bottom-24 h-20">
@@ -129,6 +124,7 @@ export default function MapPage({ navigation }) {
           data={data?.collectPoints}
           horizontal
           showsHorizontalScrollIndicator={false}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             const status: LocationStatus = data
               ? getStatusOfOneLocation(item.reports)
@@ -188,6 +184,12 @@ export default function MapPage({ navigation }) {
         onPress={() => goToInitialLocation()}
       >
         <IconH name="crosshairs" size={32} color={'#fff'} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        className="w-16 h-12 rounded-lg mt-7 absolute top-5 left-5"
+        onPress={() => navigation.goBack()}
+      >
+        <IconA name="close" size={32} />
       </TouchableOpacity>
     </View>
   )

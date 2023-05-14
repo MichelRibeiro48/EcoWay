@@ -12,7 +12,7 @@ export default function IntroPage({ navigation }) {
     if (!storageData) {
       await AsyncStorage.setItem('intro', 'false')
     } else {
-      navigation.navigate('LoginPage')
+      navigation.replace('LoginPage')
     }
   }, [navigation])
 
