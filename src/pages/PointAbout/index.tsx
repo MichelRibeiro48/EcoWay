@@ -93,8 +93,9 @@ export default function PointAbout({ navigation, route }) {
         <>
           <Image
             className="w-full h-full"
+            blurRadius={2}
             source={{
-              uri: 'https://w0.peakpx.com/wallpaper/759/715/HD-wallpaper-park-trees-grass-green-nature.jpg',
+              uri: data.collectPoint.placeImages[0].url,
             }}
             alt="forest wallpaper"
           />
@@ -113,7 +114,7 @@ export default function PointAbout({ navigation, route }) {
                   : styles.IosShadow,
               ]}
             >
-              <View>
+              <View className="items-center justify-center">
                 <Text className="mb-1">Status</Text>
                 <View className="flex-row items-center">
                   <IconC
@@ -124,33 +125,37 @@ export default function PointAbout({ navigation, route }) {
                   <Text className="ml-2">{status}</Text>
                 </View>
               </View>
-              <View className="h-2/3 w-px bg-Black ml-3 mt-1" />
-              <View className="ml-4 items-center">
-                <Text>Horário de coleta</Text>
-                <View className="flex-row justify-center mt-1">
-                  <IconR name="clockcircleo" size={16} color={'#777777'} />
-                  <Text className="ml-1">
-                    Segunda e {days[data.collectPoint.collectDays[0].day]}
-                  </Text>
-                </View>
-                <Text className="text-center">
-                  {Math.floor(
-                    data.collectPoint.collectDays[0]
-                      .initialCollectTimeInMinutes / 60,
-                  )}
-                  :
-                  {data.collectPoint.collectDays[0]
-                    .initialCollectTimeInMinutes % 60}{' '}
-                  -{' '}
-                  {Math.floor(
-                    data.collectPoint.collectDays[0].finalCollectTimeInMinutes /
-                      60,
-                  )}
-                  :
-                  {data.collectPoint.collectDays[0].finalCollectTimeInMinutes %
-                    60}
-                </Text>
-              </View>
+              {data.collectPoint.collectDays.length > 0 && (
+                <>
+                  <View className="h-2/3 w-px bg-Black ml-3 mt-1" />
+                  <View className="ml-4 items-center">
+                    <Text>Horário de coleta</Text>
+                    <View className="flex-row justify-center items-center mt-1">
+                      <IconR name="clockcircleo" size={16} color={'#777777'} />
+                      <Text className="ml-1">
+                        {days[data.collectPoint.collectDays[0].day]}
+                      </Text>
+                    </View>
+                    <Text className="text-center">
+                      {Math.floor(
+                        data.collectPoint.collectDays[0]
+                          .initialCollectTimeInMinutes / 60,
+                      )}
+                      :
+                      {data.collectPoint.collectDays[0]
+                        .initialCollectTimeInMinutes % 60}{' '}
+                      -{' '}
+                      {Math.floor(
+                        data.collectPoint.collectDays[0]
+                          .finalCollectTimeInMinutes / 60,
+                      )}
+                      :
+                      {data.collectPoint.collectDays[0]
+                        .finalCollectTimeInMinutes % 60}
+                    </Text>
+                  </View>
+                </>
+              )}
             </View>
             <View
               className="w-full bg-White justify-center rounded-xl flex-row px-11 py-3 mt-6"
@@ -195,7 +200,7 @@ export default function PointAbout({ navigation, route }) {
                 Reportar Sobrecarga
               </Text>
             </TouchableOpacity>
-            <View className="flex-row justify-between mt-auto">
+            <View className="flex-row justify-between mt-12">
               <TouchableOpacity
                 className="mt-4 w-28 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg"
                 onPress={() => navigation.goBack()}

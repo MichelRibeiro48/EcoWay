@@ -2,8 +2,10 @@ import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
   reverseGeocodeAsync,
+  watchPositionAsync,
+  LocationAccuracy,
+  LocationObject,
 } from 'expo-location'
-import { LocationObject } from 'expo-location/build/Location.types'
 import React, { useEffect, useRef, useState } from 'react'
 import {
   useFonts,
@@ -39,11 +41,13 @@ const mapPoint = gql`
     }
   }
 `
+
 export default function MapPage({ navigation }) {
   const [location, setLocation] = useState<LocationObject | null>(null)
   const [country, setCountry] = useState('')
 
   const mapRef = useRef(null)
+
   const initialLocation = {
     latitude: location?.coords.latitude,
     longitude: location?.coords.longitude,
@@ -80,6 +84,20 @@ export default function MapPage({ navigation }) {
   useEffect(() => {
     requestLocationPermission()
   }, [])
+
+  useEffect(() => {
+    watchPositionAsync(
+      {
+        accuracy: LocationAccuracy.Highest,
+        timeInterval: 1000 * 10, // 10 secs
+        distanceInterval: 1,
+      },
+      (response) => {
+        setLocation(response)
+      },
+    )
+  }, [])
+
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
