@@ -6,6 +6,7 @@ export type getSinglePoint = {
     street: string
     placeCollectTypes: string[]
     collectDays: {
+      id: string
       day: number
       initialCollectTimeInMinutes: number
       finalCollectTimeInMinutes: number

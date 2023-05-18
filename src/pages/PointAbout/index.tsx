@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Image,
   Text,
@@ -14,7 +14,6 @@ import {
   Roboto_500Medium,
 } from '@expo-google-fonts/roboto'
 import IconC from '@expo/vector-icons/FontAwesome'
-import IconR from '@expo/vector-icons/AntDesign'
 import IconP from '@expo/vector-icons/Entypo'
 import IconFe from '@expo/vector-icons/Feather'
 import styles from './styles'
@@ -26,6 +25,8 @@ import TypeRecycle from '../../components/TypeRecycle'
 import { STATUS_COLORS } from '../../utils/statusColors'
 import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 import { LocationStatus } from '../../@types/locationStatus'
+import { ModalComponent } from '../../components/ModalComponent'
+import { minutesToHours } from '../../utils/minutesToHours'
 
 const days = {
   0: 'domingo',
@@ -34,7 +35,7 @@ const days = {
   3: 'quarta',
   4: 'quinta',
   5: 'sexta',
-  6: 'sabado',
+  6: 'sábado',
 }
 
 const getCollectPoint = gql`
@@ -43,6 +44,7 @@ const getCollectPoint = gql`
       street
       placeCollectTypes
       collectDays {
+        id
         day
         initialCollectTimeInMinutes
         finalCollectTimeInMinutes
@@ -64,6 +66,7 @@ const getCollectPoint = gql`
 `
 export default function PointAbout({ navigation, route }) {
   const id = route.params
+  const [showModal, setShowModal] = useState<boolean>()
   const { data } = useQuery<getSinglePoint>(getCollectPoint, {
     variables: id,
   })
@@ -84,142 +87,159 @@ export default function PointAbout({ navigation, route }) {
     return
   }
 
-  console.log(data?.collectPoint.reports)
   return (
-    <View className="flex-1 justify-center">
-      {!data?.collectPoint ? (
-        <ActivityIndicator />
-      ) : (
-        <>
-          <Image
-            className="w-full h-full"
-            blurRadius={2}
-            source={{
-              uri: data.collectPoint.placeImages[0].url,
-            }}
-            alt="forest wallpaper"
-          />
-          <View className="w-11/12 bg-White absolute self-center p-6 flex-col rounded-xl">
-            <CardLocation
-              distance={id.distance}
-              image={data.collectPoint.placeImages[0].url}
-              status={status}
-              title={data.collectPoint.name}
-            />
-            <View
-              className="w-full bg-White items-center justify-center rounded-xl flex-row py-4 mt-6"
-              style={[
-                Platform.OS === 'android'
-                  ? styles.AndroidShadow
-                  : styles.IosShadow,
-              ]}
-            >
-              <View className="items-center justify-center">
-                <Text className="mb-1">Status</Text>
-                <View className="flex-row items-center">
-                  <IconC
-                    name="circle"
-                    size={16}
-                    color={STATUS_COLORS[status]}
-                  />
-                  <Text className="ml-2">{status}</Text>
-                </View>
-              </View>
-              {data.collectPoint.collectDays.length > 0 && (
-                <>
-                  <View className="h-2/3 w-px bg-Black ml-3 mt-1" />
-                  <View className="ml-4 items-center">
-                    <Text>Horário de coleta</Text>
-                    <View className="flex-row justify-center items-center mt-1">
-                      <IconR name="clockcircleo" size={16} color={'#777777'} />
-                      <Text className="ml-1">
-                        {days[data.collectPoint.collectDays[0].day]}
-                      </Text>
-                    </View>
-                    <Text className="text-center">
-                      {Math.floor(
-                        data.collectPoint.collectDays[0]
-                          .initialCollectTimeInMinutes / 60,
-                      )}
-                      :
-                      {data.collectPoint.collectDays[0]
-                        .initialCollectTimeInMinutes % 60}{' '}
-                      -{' '}
-                      {Math.floor(
-                        data.collectPoint.collectDays[0]
-                          .finalCollectTimeInMinutes / 60,
-                      )}
-                      :
-                      {data.collectPoint.collectDays[0]
-                        .finalCollectTimeInMinutes % 60}
+    <>
+      <ModalComponent
+        isVisible={showModal}
+        onRequestClose={() => setShowModal(false)}
+      >
+        <View className="bg-White p-8 w-full max-w-[90%] rounded-lg max-h-[80%]">
+          {data && (
+            <FlatList
+              data={data.collectPoint.collectDays}
+              renderItem={({ item }) => (
+                <View className="flex-row justify-between">
+                  <Text>{days[item.day]}</Text>
+                  <View className="flex-row">
+                    <Text>
+                      {minutesToHours(item.initialCollectTimeInMinutes)}
+                    </Text>
+                    <Text> às </Text>
+                    <Text>
+                      {minutesToHours(item.finalCollectTimeInMinutes)}
                     </Text>
                   </View>
-                </>
-              )}
-            </View>
-            <View
-              className="w-full bg-White justify-center rounded-xl flex-row px-11 py-3 mt-6"
-              style={[
-                Platform.OS === 'android'
-                  ? styles.AndroidShadow
-                  : styles.IosShadow,
-              ]}
-            >
-              <View>
-                <View className="flex-row justify-center">
-                  <IconP name="location-pin" size={16} color={'#576032'} />
-                  <Text>Endereço</Text>
                 </View>
-                <Text className="mt-1">{data.collectPoint.street}</Text>
-              </View>
-            </View>
-            <View
-              className="w-full bg-White justify-center rounded-xl flex-row px-11 py-3 mt-6"
-              style={[
-                Platform.OS === 'android'
-                  ? styles.AndroidShadow
-                  : styles.IosShadow,
-              ]}
-            >
-              <View>
-                <FlatList
-                  data={data.collectPoint.placeCollectTypes}
-                  horizontal
-                  renderItem={({ item }) => <TypeRecycle wasteType={item} />}
-                />
-              </View>
-            </View>
-            <TouchableOpacity
-              className="mt-10 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg flex-row"
-              onPress={() =>
-                navigation.navigate('ReportPage', { id, distance: id.distance })
-              }
-            >
-              <IconFe name="alert-triangle" size={24} color={'white'} />
-              <Text className="text-White ml-1 font-bold text-base">
-                Reportar Sobrecarga
-              </Text>
-            </TouchableOpacity>
-            <View className="flex-row justify-between mt-12">
-              <TouchableOpacity
-                className="mt-4 w-28 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg"
-                onPress={() => navigation.goBack()}
+              )}
+              keyExtractor={(item) => item.id}
+              className="h-auto grow-0 space-y-8"
+            />
+          )}
+        </View>
+      </ModalComponent>
+      <View className="flex-1 justify-center">
+        {!data?.collectPoint ? (
+          <ActivityIndicator />
+        ) : (
+          <>
+            <Image
+              className="w-full h-full"
+              blurRadius={2}
+              source={{
+                uri: data.collectPoint.placeImages[0].url,
+              }}
+              alt="forest wallpaper"
+            />
+            <View className="w-11/12 bg-White absolute self-center p-6 flex-col rounded-xl">
+              <CardLocation
+                distance={id.distance}
+                image={data.collectPoint.placeImages[0].url}
+                status={status}
+                title={data.collectPoint.name}
+              />
+              <View
+                className="w-full bg-White items-center justify-center rounded-xl flex-row py-4 mt-6"
+                style={[
+                  Platform.OS === 'android'
+                    ? styles.AndroidShadow
+                    : styles.IosShadow,
+                ]}
               >
-                <IconC name="close" size={24} color={'white'} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="mt-4 w-28 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg flex-row"
-                onPress={() => Linking.openURL(mapsURL)}
+                <View className="items-center justify-center">
+                  <Text className="mb-1">Status</Text>
+                  <View className="flex-row items-center">
+                    <IconC
+                      name="circle"
+                      size={16}
+                      color={STATUS_COLORS[status]}
+                    />
+                    <Text className="ml-2">{status}</Text>
+                  </View>
+                </View>
+              </View>
+
+              <View
+                className="w-full bg-White justify-center rounded-xl flex-row px-11 py-4 mt-6"
+                style={[
+                  Platform.OS === 'android'
+                    ? styles.AndroidShadow
+                    : styles.IosShadow,
+                ]}
               >
-                <IconP name="location-pin" size={24} color={'white'} />
+                <View>
+                  <View className="flex-row justify-center">
+                    <IconP name="location-pin" size={16} color={'#576032'} />
+                    <Text>Endereço</Text>
+                  </View>
+                  <Text className="mt-1">{data.collectPoint.street}</Text>
+                </View>
+              </View>
+              <View
+                className="w-full bg-White justify-center rounded-xl flex-row px-11 py-4 mt-6"
+                style={[
+                  Platform.OS === 'android'
+                    ? styles.AndroidShadow
+                    : styles.IosShadow,
+                ]}
+              >
+                <View>
+                  <FlatList
+                    data={data.collectPoint.placeCollectTypes}
+                    horizontal
+                    renderItem={({ item }) => <TypeRecycle wasteType={item} />}
+                  />
+                </View>
+              </View>
+              <View
+                className="w-full bg-White items-center justify-center rounded-xl flex-row py-4 mt-6"
+                style={[
+                  Platform.OS === 'android'
+                    ? styles.AndroidShadow
+                    : styles.IosShadow,
+                ]}
+              >
+                <TouchableOpacity
+                  className="items-center justify-center"
+                  onPress={() => setShowModal(true)}
+                >
+                  <Text className="mb-1 text-base">Ver horários de coleta</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                className="mt-10 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg flex-row"
+                onPress={() =>
+                  navigation.navigate('ReportPage', {
+                    id,
+                    distance: id.distance,
+                  })
+                }
+              >
+                <IconFe name="alert-triangle" size={24} color={'white'} />
                 <Text className="text-White ml-1 font-bold text-base">
-                  Rotas
+                  Reportar Sobrecarga
                 </Text>
               </TouchableOpacity>
+              <View className="flex-row justify-between mt-12">
+                <TouchableOpacity
+                  className="mt-4 w-28 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg"
+                  onPress={() => navigation.goBack()}
+                >
+                  <IconC name="close" size={24} color={'white'} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="mt-4 w-28 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg flex-row"
+                  onPress={() => Linking.openURL(mapsURL)}
+                >
+                  <IconP name="location-pin" size={24} color={'white'} />
+                  <Text className="text-White ml-1 font-bold text-base">
+                    Rotas
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </>
-      )}
-    </View>
+          </>
+        )}
+      </View>
+    </>
   )
 }
