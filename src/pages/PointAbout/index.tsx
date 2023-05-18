@@ -98,14 +98,14 @@ export default function PointAbout({ navigation, route }) {
             <FlatList
               data={data.collectPoint.collectDays}
               renderItem={({ item }) => (
-                <View className="flex-row justify-between">
-                  <Text>{days[item.day]}</Text>
+                <View className="flex-row justify-between bg-black/10 p-4 rounded-lg">
+                  <Text className="text-base">{days[item.day]}</Text>
                   <View className="flex-row">
-                    <Text>
+                    <Text className="text-base">
                       {minutesToHours(item.initialCollectTimeInMinutes)}
                     </Text>
-                    <Text> às </Text>
-                    <Text>
+                    <Text className="text-base"> às </Text>
+                    <Text className="text-base">
                       {minutesToHours(item.finalCollectTimeInMinutes)}
                     </Text>
                   </View>

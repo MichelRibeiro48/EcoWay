@@ -46,7 +46,7 @@ export default function MapPage({ navigation }) {
   const [location, setLocation] = useState<LocationObject | null>(null)
   const [country, setCountry] = useState('')
 
-  const mapRef = useRef(null)
+  const mapRef = useRef<MapView>(null)
 
   const initialLocation = {
     latitude: location?.coords.latitude,
@@ -56,8 +56,9 @@ export default function MapPage({ navigation }) {
   }
 
   function goToInitialLocation() {
-    mapRef.current.animateToRegion(initialLocation, 3 * 1000)
+    mapRef.current.animateToRegion(initialLocation, 250)
   }
+
   async function requestLocationPermission() {
     const { granted } = await requestForegroundPermissionsAsync()
 
