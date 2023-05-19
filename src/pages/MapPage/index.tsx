@@ -2,8 +2,10 @@ import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
   reverseGeocodeAsync,
+  watchPositionAsync,
+  LocationAccuracy,
+  LocationObject,
 } from 'expo-location'
-import { LocationObject } from 'expo-location/build/Location.types'
 import React, { useEffect, useRef, useState } from 'react'
 import {
   useFonts,
@@ -20,6 +22,7 @@ import { gql, useQuery } from '@apollo/client'
 import { MapPoint } from './types'
 import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 import { LocationStatus } from '../../@types/locationStatus'
+import { ActivityIndicator } from 'react-native-paper'
 
 const mapPoint = gql`
   query PointMarker($country: String!, $latitude: Float!, $longitude: Float!) {
@@ -40,11 +43,24 @@ const mapPoint = gql`
     }
   }
 `
+
 export default function MapPage({ navigation }) {
   const [location, setLocation] = useState<LocationObject | null>(null)
   const [country, setCountry] = useState('')
 
-  const mapRef = useRef(null)
+  const mapRef = useRef<MapView>(null)
+
+  const initialLocation = {
+    latitude: location?.coords.latitude,
+    longitude: location?.coords.longitude,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  }
+
+  function goToInitialLocation() {
+    mapRef.current.animateToRegion(initialLocation, 250)
+  }
+
   async function requestLocationPermission() {
     const { granted } = await requestForegroundPermissionsAsync()
 
@@ -60,26 +76,31 @@ export default function MapPage({ navigation }) {
       setLocation(currentPosition)
     }
   }
-  useEffect(() => {
-    requestLocationPermission()
-  }, [])
-  const initialLocation = {
-    latitude: location?.coords.latitude,
-    longitude: location?.coords.longitude,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  }
-
-  function goToInitialLocation() {
-    mapRef.current.animateToRegion(initialLocation, 250)
-  }
-  const { data } = useQuery<MapPoint>(mapPoint, {
+  const { data, loading } = useQuery<MapPoint>(mapPoint, {
     variables: {
       country,
       latitude: location?.coords.latitude,
       longitude: location?.coords.longitude,
     },
   })
+
+  useEffect(() => {
+    requestLocationPermission()
+  }, [])
+
+  useEffect(() => {
+    watchPositionAsync(
+      {
+        accuracy: LocationAccuracy.Highest,
+        timeInterval: 1000 * 10, // 10 secs
+        distanceInterval: 1,
+      },
+      (response) => {
+        setLocation(response)
+      },
+    )
+  }, [])
+
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
@@ -88,6 +109,15 @@ export default function MapPage({ navigation }) {
   if (!fontsLoaded) {
     return
   }
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-White">
+        <ActivityIndicator size="large" color="#576032" />
+      </View>
+    )
+  }
+
   return (
     <View>
       {location && (
