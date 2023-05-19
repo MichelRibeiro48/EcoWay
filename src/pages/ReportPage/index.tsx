@@ -13,6 +13,7 @@ import {
   Roboto_500Medium,
   Roboto_700Bold,
 } from '@expo-google-fonts/roboto'
+import * as FileSystem from 'expo-file-system'
 import IconR from '@expo/vector-icons/AntDesign'
 import IconF from '@expo/vector-icons/FontAwesome'
 import styles from './styles'
@@ -23,6 +24,7 @@ import { gql, useQuery } from '@apollo/client'
 import { getSinglePoint } from '../PointAbout/types'
 import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 import { LocationStatus } from '../../@types/locationStatus'
+import { PropsResponseImage } from './types'
 
 const getCollectPoint = gql`
   query MyQuery($id: ID) {
@@ -64,6 +66,24 @@ export default function ReportPage({ navigation, route }) {
     return
   }
 
+  const postImageImgur = async () => {
+    try {
+      const response = await FileSystem.uploadAsync(
+        'https://api.imgur.com/3/image',
+        imageCamera,
+        {
+          httpMethod: 'POST',
+          headers: {
+            Authorization: 'Client-ID d7bc3fea8bfe840',
+          },
+        },
+      )
+      const data: PropsResponseImage = await JSON.parse(response.body)
+      return data
+    } catch (err) {
+      console.log(err)
+    }
+  }
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -161,7 +181,7 @@ export default function ReportPage({ navigation, route }) {
           </TouchableOpacity>
           <TouchableOpacity
             className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg flex-row"
-            onPress={() => console.log('Foto enviada com sucesso!')}
+            onPress={() => postImageImgur()}
           >
             <IconF name="send" size={16} color={'white'} />
             <Text

@@ -12,7 +12,7 @@ export default function CardLocation({
   return (
     <View
       className={classNames(
-        `w-full bg-White border-b-4 py-3 px-4 flex-row items-center rounded-xl justify-between`,
+        `w-full bg-White border-b-4 py-3 px-6 flex-row items-center rounded-xl`,
         {
           'border-Red': status === 'full',
           'border-Yellow': status === 'partially_full',
@@ -23,13 +23,20 @@ export default function CardLocation({
         Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow
       }
     >
-      <Image source={{ uri: image }} className="w-14 h-14 mr-2" alt="" />
-      <View className="flex-col">
+      <Image
+        source={{ uri: image }}
+        className="w-16 h-16 mr-2 rounded-lg"
+        alt=""
+      />
+      <View className="flex-col ml-2">
         <Text
           style={{
             fontFamily: 'Roboto_100Thin_Italic',
           }}
-          className="text-xl max-w-[95%]"
+          className={classNames(`text-xl`, {
+            'max-w-full': title.length < 20,
+            'max-w-[95%]': title.length >= 20,
+          })}
           ellipsizeMode="tail"
           numberOfLines={1}
         >

@@ -123,7 +123,7 @@ export default function PointAbout({ navigation, route }) {
         ) : (
           <>
             <Image
-              className="w-full h-full"
+              className="w-full h-full rounded-lg"
               blurRadius={2}
               source={{
                 uri: data.collectPoint.placeImages[0].url,
