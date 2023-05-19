@@ -21,6 +21,7 @@ import { gql, useQuery } from '@apollo/client'
 import { MapPoint } from './types'
 import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 import { LocationStatus } from '../../@types/locationStatus'
+import { ActivityIndicator } from 'react-native-paper'
 
 const mapPoint = gql`
   query PointMarker($country: String!, $latitude: Float!, $longitude: Float!) {
@@ -74,7 +75,7 @@ export default function MapPage({ navigation }) {
       setLocation(currentPosition)
     }
   }
-  const { data } = useQuery<MapPoint>(mapPoint, {
+  const { data, loading } = useQuery<MapPoint>(mapPoint, {
     variables: {
       country,
       latitude: location?.coords.latitude,
@@ -107,6 +108,15 @@ export default function MapPage({ navigation }) {
   if (!fontsLoaded) {
     return
   }
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-White">
+        <ActivityIndicator size="large" color="#576032" />
+      </View>
+    )
+  }
+
   return (
     <View>
       {location && (
