@@ -2,8 +2,6 @@ import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
   reverseGeocodeAsync,
-  watchPositionAsync,
-  LocationAccuracy,
   LocationObject,
 } from 'expo-location'
 import React, { useEffect, useRef, useState } from 'react'
@@ -106,11 +104,7 @@ export default function MapPage({ navigation }) {
     Roboto_500Medium,
   })
 
-  if (!fontsLoaded) {
-    return
-  }
-
-  if (loading) {
+  if (loading || !fontsLoaded || !location) {
     return (
       <View className="flex-1 items-center justify-center bg-White">
         <ActivityIndicator size="large" color="#576032" />
@@ -120,35 +114,33 @@ export default function MapPage({ navigation }) {
 
   return (
     <View>
-      {location && (
-        <MapView
-          provider={PROVIDER_GOOGLE}
-          ref={mapRef}
-          showsUserLocation={true}
-          followsUserLocation={true}
-          className="w-full h-full flex-col justify-end"
-          initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-          }}
-        >
-          {data?.collectPoints.map((marker, index) => {
-            return (
-              <Marker
-                key={index}
-                coordinate={{
-                  latitude: marker.geoCoordinates.latitude,
-                  longitude: marker.geoCoordinates.longitude,
-                }}
-                image={require('../../assets/markerOff.png')}
-                onPress={() => navigation.navigate('PointAbout', marker)}
-              />
-            )
-          })}
-        </MapView>
-      )}
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        ref={mapRef}
+        showsUserLocation={true}
+        followsUserLocation={true}
+        className="w-full h-full flex-col justify-end"
+        initialRegion={{
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        }}
+      >
+        {data?.collectPoints.map((marker, index) => {
+          return (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: marker.geoCoordinates.latitude,
+                longitude: marker.geoCoordinates.longitude,
+              }}
+              image={require('../../assets/markerOff.png')}
+              onPress={() => navigation.navigate('PointAbout', marker)}
+            />
+          )
+        })}
+      </MapView>
       <View className="absolute bottom-24 h-20">
         <FlatList
           data={data?.collectPoints}
