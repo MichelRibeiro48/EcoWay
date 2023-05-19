@@ -88,18 +88,18 @@ export default function MapPage({ navigation }) {
     requestLocationPermission()
   }, [])
 
-  useEffect(() => {
-    watchPositionAsync(
-      {
-        accuracy: LocationAccuracy.Highest,
-        timeInterval: 1000 * 10, // 10 secs
-        distanceInterval: 1,
-      },
-      (response) => {
-        setLocation(response)
-      },
-    )
-  }, [])
+  // useEffect(() => {
+  //   watchPositionAsync(
+  //     {
+  //       accuracy: LocationAccuracy.Highest,
+  //       timeInterval: 1000 * 10, // 10 secs
+  //       distanceInterval: 1,
+  //     },
+  //     (response) => {
+  //       setLocation(response)
+  //     },
+  //   )
+  // }, [])
 
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,

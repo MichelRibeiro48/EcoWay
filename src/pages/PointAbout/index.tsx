@@ -87,13 +87,6 @@ export default function PointAbout({ navigation, route }) {
     return
   }
 
-  const translateStatus = {
-    empty: 'Vazio',
-    partially_full: 'Parcialmente Cheio',
-    full: 'Cheio',
-  }
-
-  console.log(data?.collectPoint.reports)
   return (
     <>
       <ModalComponent

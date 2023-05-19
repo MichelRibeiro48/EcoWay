@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native'
+import { View, Text, TextInput, Pressable, ScrollView } from 'react-native'
 import { useOAuth, useSession, useSignIn } from '@clerk/clerk-expo'
 import BackgroundSvg from '../../assets/background.svg'
 import IconE from '@expo/vector-icons/Entypo'
@@ -28,7 +21,7 @@ export default function LoginPage({ navigation }) {
   useWarmUpBrowser()
 
   const { signIn, setSession } = useSignIn()
-  const { session, isLoaded } = useSession()
+  const { session } = useSession()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
