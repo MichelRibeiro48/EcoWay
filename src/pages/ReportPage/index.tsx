@@ -22,6 +22,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { gql, useQuery } from '@apollo/client'
 import { getSinglePoint } from '../PointAbout/types'
 import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
+import { LocationStatus } from '../../@types/locationStatus'
 
 const getCollectPoint = gql`
   query MyQuery($id: ID) {
@@ -39,7 +40,7 @@ const getCollectPoint = gql`
         url
       }
       reports {
-        id
+        locationStatusType
       }
     }
   }
@@ -50,10 +51,13 @@ export default function ReportPage({ navigation, route }) {
   const { data } = useQuery<getSinglePoint>(getCollectPoint, { variables: id })
   const [checked, setChecked] = useState('')
   const [imageCamera, setImageCamera] = useState(null)
+
+  const status: LocationStatus = data
+    ? getStatusOfOneLocation(data.collectPoint.reports)
+    : 'empty'
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
-    Roboto_700Bold,
   })
 
   if (!fontsLoaded) {
@@ -90,7 +94,7 @@ export default function ReportPage({ navigation, route }) {
         <CardLocation
           distance={distance}
           image={data.collectPoint.placeImages[0].url}
-          status={getStatusOfOneLocation(data.collectPoint.reports)}
+          status={status}
           title={data.collectPoint.name}
         />
         <View

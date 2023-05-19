@@ -2,8 +2,10 @@ import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
   reverseGeocodeAsync,
+  watchPositionAsync,
+  LocationAccuracy,
+  LocationObject,
 } from 'expo-location'
-import { LocationObject } from 'expo-location/build/Location.types'
 import React, { useEffect, useRef, useState } from 'react'
 import {
   useFonts,
@@ -14,11 +16,13 @@ import { Text, View, Image, TouchableOpacity, FlatList } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import IconH from '@expo/vector-icons/FontAwesome5'
 import IconE from '@expo/vector-icons/Entypo'
+import IconA from '@expo/vector-icons/AntDesign'
 import classNames from 'classnames'
 import { gql, useQuery } from '@apollo/client'
 import { MapPoint } from './types'
 import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 import { LocationStatus } from '../../@types/locationStatus'
+import { ActivityIndicator } from 'react-native-paper'
 
 const mapPoint = gql`
   query PointMarker($country: String!, $latitude: Float!, $longitude: Float!) {
@@ -39,11 +43,13 @@ const mapPoint = gql`
     }
   }
 `
+
 export default function MapPage({ navigation }) {
   const [location, setLocation] = useState<LocationObject | null>(null)
   const [country, setCountry] = useState('')
 
-  const mapRef = useRef(null)
+  const mapRef = useRef<MapView>(null)
+
   const initialLocation = {
     latitude: location?.coords.latitude,
     longitude: location?.coords.longitude,
@@ -52,8 +58,9 @@ export default function MapPage({ navigation }) {
   }
 
   function goToInitialLocation() {
-    mapRef.current.animateToRegion(initialLocation, 3 * 1000)
+    mapRef.current.animateToRegion(initialLocation, 250)
   }
+
   async function requestLocationPermission() {
     const { granted } = await requestForegroundPermissionsAsync()
 
@@ -69,7 +76,7 @@ export default function MapPage({ navigation }) {
       setLocation(currentPosition)
     }
   }
-  const { data } = useQuery<MapPoint>(mapPoint, {
+  const { data, loading } = useQuery<MapPoint>(mapPoint, {
     variables: {
       country,
       latitude: location?.coords.latitude,
@@ -80,6 +87,20 @@ export default function MapPage({ navigation }) {
   useEffect(() => {
     requestLocationPermission()
   }, [])
+
+  // useEffect(() => {
+  //   watchPositionAsync(
+  //     {
+  //       accuracy: LocationAccuracy.Highest,
+  //       timeInterval: 1000 * 10, // 10 secs
+  //       distanceInterval: 1,
+  //     },
+  //     (response) => {
+  //       setLocation(response)
+  //     },
+  //   )
+  // }, [])
+
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
@@ -88,12 +109,23 @@ export default function MapPage({ navigation }) {
   if (!fontsLoaded) {
     return
   }
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-White">
+        <ActivityIndicator size="large" color="#576032" />
+      </View>
+    )
+  }
+
   return (
     <View>
       {location && (
         <MapView
           provider={PROVIDER_GOOGLE}
           ref={mapRef}
+          showsUserLocation={true}
+          followsUserLocation={true}
           className="w-full h-full flex-col justify-end"
           initialRegion={{
             latitude: location.coords.latitude,
@@ -115,13 +147,6 @@ export default function MapPage({ navigation }) {
               />
             )
           })}
-          <Marker
-            coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            }}
-            image={require('../../assets/gps.png')}
-          />
         </MapView>
       )}
       <View className="absolute bottom-24 h-20">
@@ -129,6 +154,7 @@ export default function MapPage({ navigation }) {
           data={data?.collectPoints}
           horizontal
           showsHorizontalScrollIndicator={false}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             const status: LocationStatus = data
               ? getStatusOfOneLocation(item.reports)
@@ -188,6 +214,12 @@ export default function MapPage({ navigation }) {
         onPress={() => goToInitialLocation()}
       >
         <IconH name="crosshairs" size={32} color={'#fff'} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        className="w-16 h-12 rounded-lg mt-7 absolute top-5 left-5"
+        onPress={() => navigation.goBack()}
+      >
+        <IconA name="close" size={32} />
       </TouchableOpacity>
     </View>
   )

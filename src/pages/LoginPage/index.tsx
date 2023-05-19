@@ -20,7 +20,7 @@ maybeCompleteAuthSession()
 export default function LoginPage({ navigation }) {
   useWarmUpBrowser()
 
-  const { signIn, setSession, isLoaded } = useSignIn()
+  const { signIn, setSession } = useSignIn()
   const { session } = useSession()
 
   const [email, setEmail] = useState('')
@@ -29,6 +29,10 @@ export default function LoginPage({ navigation }) {
   const [errorPassword, setErrorPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (session) navigation.replace('HomePage')
+  }, [session])
 
   useEffect(() => {
     if (email.length > 0) {
@@ -65,9 +69,6 @@ export default function LoginPage({ navigation }) {
       setLoading(false)
       return
     }
-    if (!isLoaded) {
-      return
-    }
     try {
       const completeSignIn = await signIn.create({
         identifier: email,
@@ -90,10 +91,6 @@ export default function LoginPage({ navigation }) {
       setLoading(false)
     }
   }
-
-  useEffect(() => {
-    if (session) navigation.replace('HomePage')
-  }, [navigation, session])
 
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
@@ -155,7 +152,11 @@ export default function LoginPage({ navigation }) {
               onPress={() => setShowPassword(!showPassword)}
               style={{ position: 'absolute', right: 16 }}
             >
-              <IconE name={!showPassword ? 'eye' : 'eye-with-line'} size={24} />
+              <IconE
+                name={!showPassword ? 'eye' : 'eye-with-line'}
+                color={'#576032'}
+                size={24}
+              />
             </Pressable>
           </View>
           {errorPassword && (
