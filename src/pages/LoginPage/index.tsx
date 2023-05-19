@@ -155,7 +155,11 @@ export default function LoginPage({ navigation }) {
               onPress={() => setShowPassword(!showPassword)}
               style={{ position: 'absolute', right: 16 }}
             >
-              <IconE name={!showPassword ? 'eye' : 'eye-with-line'} size={24} />
+              <IconE
+                name={!showPassword ? 'eye' : 'eye-with-line'}
+                color={'#576032'}
+                size={24}
+              />
             </Pressable>
           </View>
           {errorPassword && (
