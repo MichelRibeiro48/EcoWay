@@ -128,7 +128,7 @@ export default function PointAbout({ navigation, route }) {
               source={{
                 uri: data.collectPoint.placeImages[0].url,
               }}
-              alt="forest wallpaper"
+              alt="wallpaper"
             />
             <View className="w-11/12 bg-White absolute self-center p-6 flex-col rounded-xl">
               <CardLocation
@@ -203,21 +203,38 @@ export default function PointAbout({ navigation, route }) {
                   />
                 </View>
               </View>
-              <View
-                className="w-full bg-White items-center justify-center rounded-xl flex-row py-4 mt-6"
-                style={[
-                  Platform.OS === 'android'
-                    ? styles.AndroidShadow
-                    : styles.IosShadow,
-                ]}
-              >
-                <TouchableOpacity
-                  className="items-center justify-center"
-                  onPress={() => setShowModal(true)}
+              {data.collectPoint.collectDays.length > 0 ? (
+                <View
+                  className="w-full bg-White items-center justify-center rounded-xl flex-row py-4 mt-6"
+                  style={[
+                    Platform.OS === 'android'
+                      ? styles.AndroidShadow
+                      : styles.IosShadow,
+                  ]}
                 >
-                  <Text className="mb-1 text-base">Ver horários de coleta</Text>
-                </TouchableOpacity>
-              </View>
+                  <TouchableOpacity
+                    className="items-center justify-center"
+                    onPress={() => setShowModal(true)}
+                  >
+                    <Text className="mb-1 text-base">
+                      Ver horários de coleta
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View
+                  className="w-full bg-White items-center justify-center rounded-xl flex-row py-4 mt-6"
+                  style={[
+                    Platform.OS === 'android'
+                      ? styles.AndroidShadow
+                      : styles.IosShadow,
+                  ]}
+                >
+                  <Text className="mb-1 text-base">
+                    horários de coleta não informados
+                  </Text>
+                </View>
+              )}
               <TouchableOpacity
                 className="mt-10 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg flex-row"
                 onPress={() =>
