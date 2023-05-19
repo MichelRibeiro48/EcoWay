@@ -64,6 +64,7 @@ export default function MapPage({ navigation }) {
 
     if (granted) {
       const currentPosition = await getCurrentPositionAsync()
+      setLocation(currentPosition)
       if (currentPosition) {
         const currentCountry = await reverseGeocodeAsync({
           latitude: currentPosition.coords.latitude,
@@ -71,7 +72,6 @@ export default function MapPage({ navigation }) {
         })
         setCountry(currentCountry[0].region.toLowerCase())
       }
-      setLocation(currentPosition)
     }
   }
   const { data, loading } = useQuery<MapPoint>(mapPoint, {
