@@ -185,8 +185,21 @@ export default function PointAbout({ navigation, route }) {
                 <View>
                   <FlatList
                     data={data.collectPoint.placeCollectTypes}
-                    horizontal
-                    renderItem={({ item }) => <TypeRecycle wasteType={item} />}
+                    renderItem={({ item, index }) => (
+                      <View
+                        style={{
+                          marginRight:
+                            index ===
+                            data.collectPoint.placeCollectTypes.length - 1
+                              ? 0
+                              : 12,
+                        }}
+                      >
+                        <TypeRecycle wasteType={item} />
+                      </View>
+                    )}
+                    numColumns={3}
+                    ItemSeparatorComponent={() => <View className="h-3" />}
                   />
                 </View>
               </View>

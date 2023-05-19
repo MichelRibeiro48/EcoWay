@@ -1,10 +1,20 @@
 import { LocationStatus } from '../../@types/locationStatus'
 
+export type collectTypes =
+  | 'plastic'
+  | 'paper'
+  | 'organic'
+  | 'metal'
+  | 'electronic_waste'
+  | 'glass'
+  | 'batteries'
+  | 'green_container'
+
 export type getSinglePoint = {
   collectPoint: {
     cep: string
     street: string
-    placeCollectTypes: string[]
+    placeCollectTypes: collectTypes[]
     collectDays: {
       id: string
       day: number
