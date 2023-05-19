@@ -71,7 +71,7 @@ export default function MapPage({ navigation }) {
   }
 
   function goToInitialLocation() {
-    mapRef.current.animateToRegion(initialLocation, 3 * 1000)
+    mapRef.current.animateToRegion(initialLocation, 250)
   }
   const { data } = useQuery<MapPoint>(mapPoint, {
     variables: {

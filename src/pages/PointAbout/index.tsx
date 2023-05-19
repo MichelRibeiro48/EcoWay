@@ -34,7 +34,7 @@ const days = {
   3: 'quarta',
   4: 'quinta',
   5: 'sexta',
-  6: 'sabado',
+  6: 'sábado',
 }
 
 const getCollectPoint = gql`
@@ -136,26 +136,28 @@ export default function PointAbout({ navigation, route }) {
                 <View className="flex-row justify-center mt-1">
                   <IconR name="clockcircleo" size={16} color={'#777777'} />
                   <Text className="ml-1">
-                    Segunda e {days[data.collectPoint.collectDays[0].day]}
+                    Segunda e {days[data.collectPoint.collectDays[0]?.day]}
                   </Text>
                 </View>
-                <Text className="text-center">
-                  {Math.floor(
-                    data.collectPoint.collectDays[0]
-                      .initialCollectTimeInMinutes / 60,
-                  )}
-                  :
-                  {data.collectPoint.collectDays[0]
-                    .initialCollectTimeInMinutes % 60}{' '}
-                  -{' '}
-                  {Math.floor(
-                    data.collectPoint.collectDays[0].finalCollectTimeInMinutes /
-                      60,
-                  )}
-                  :
-                  {data.collectPoint.collectDays[0].finalCollectTimeInMinutes %
-                    60}
-                </Text>
+                {data.collectPoint.collectDays[0] && (
+                  <Text className="text-center">
+                    {Math.floor(
+                      data.collectPoint.collectDays[0]
+                        .initialCollectTimeInMinutes / 60,
+                    )}
+                    :
+                    {data.collectPoint.collectDays[0]
+                      .initialCollectTimeInMinutes % 60}{' '}
+                    -{' '}
+                    {Math.floor(
+                      data.collectPoint.collectDays[0]
+                        .finalCollectTimeInMinutes / 60,
+                    )}
+                    :
+                    {data.collectPoint.collectDays[0]
+                      .finalCollectTimeInMinutes % 60}
+                  </Text>
+                )}
               </View>
             </View>
             <View

@@ -6,7 +6,7 @@ const wasteTypes = {
   paper: { name: 'Papel', color: '#3D57E1' },
   organic: { name: 'Orgânico', color: '#422813' },
   metal: { name: 'Metal', color: '#E1B33D' },
-  eletronic_wave: { name: 'Lixo Eletrônico', color: '#0C0C0C' },
+  eletronic_waste: { name: 'Lixo Eletrônico', color: '#0C0C0C' },
   glass: { name: 'Vidro', color: '#576032' },
   batteries: { name: 'Baterias', color: '#ff6803' },
 }
