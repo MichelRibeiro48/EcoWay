@@ -11,7 +11,6 @@ import {
   useFonts,
   Roboto_100Thin_Italic,
   Roboto_500Medium,
-  Roboto_700Bold,
 } from '@expo-google-fonts/roboto'
 import * as FileSystem from 'expo-file-system'
 import IconR from '@expo/vector-icons/AntDesign'
@@ -20,11 +19,12 @@ import styles from './styles'
 import CardLocation from '../../components/CardLocation'
 import { ActivityIndicator, RadioButton } from 'react-native-paper'
 import * as ImagePicker from 'expo-image-picker'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import { getSinglePoint } from '../PointAbout/types'
 import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 import { LocationStatus } from '../../@types/locationStatus'
 import { PropsResponseImage } from './types'
+import { useAuth } from '@clerk/clerk-expo'
 
 const getCollectPoint = gql`
   query MyQuery($id: ID) {
@@ -48,11 +48,58 @@ const getCollectPoint = gql`
   }
 `
 
+const CREATE_REPORT = gql`
+  mutation MyMutation(
+    $description: String!
+    $locationId: ID
+    $userId: String!
+    $locationStatusType: StatusType!
+    $locationImageUrl: String
+  ) {
+    createReport(
+      data: {
+        description: $description
+        userId: $userId
+        locationStatusType: $locationStatusType
+        locationImageUrl: $locationImageUrl
+        clh4uk4d25oj801umdsduahee: { connect: { id: $locationId } }
+      }
+    ) {
+      id
+    }
+  }
+`
+
+const PUBLISH_REPORT = gql`
+  mutation MyMutation($id: ID) {
+    publishReport(where: { id: $id }, to: PUBLISHED) {
+      id
+    }
+  }
+`
+
 export default function ReportPage({ navigation, route }) {
   const { id, distance } = route.params
   const { data } = useQuery<getSinglePoint>(getCollectPoint, { variables: id })
+  const [publishReport] = useMutation(PUBLISH_REPORT)
+
+  const [createReport, { data: reportDataResponse }] = useMutation(
+    CREATE_REPORT,
+    {
+      onCompleted: async (data) => {
+        await publishReport({
+          variables: {
+            id: data.createReport.id,
+          },
+        })
+      },
+    },
+  )
+
   const [checked, setChecked] = useState('')
   const [imageCamera, setImageCamera] = useState(null)
+  const [description, setDescription] = useState('')
+  const { userId } = useAuth()
 
   const status: LocationStatus = data
     ? getStatusOfOneLocation(data.collectPoint.reports)
@@ -84,6 +131,33 @@ export default function ReportPage({ navigation, route }) {
       console.log(err)
     }
   }
+
+  const report = async () => {
+    const data = await postImageImgur()
+
+    console.log({
+      variables: {
+        description,
+        locationImageUrl: data.data.link,
+        locationStatusType: checked,
+        userId,
+        locationId: id.id,
+      },
+    })
+
+    await createReport({
+      variables: {
+        description,
+        locationImageUrl: data.data.link,
+        userId,
+        locationStatusType: checked,
+        locationId: id.id,
+      },
+    })
+
+    console.log(JSON.stringify('data:', reportDataResponse))
+  }
+
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -102,12 +176,13 @@ export default function ReportPage({ navigation, route }) {
   }
 
   return (
-    <View className="flex-1 justify-center">
+    <View className="flex-1 justify-center min-h-[90vh]">
       <Image
         className="w-full h-full"
         source={{
-          uri: 'https://w0.peakpx.com/wallpaper/759/715/HD-wallpaper-park-trees-grass-green-nature.jpg',
+          uri: data.collectPoint.placeImages[0].url,
         }}
+        blurRadius={2}
         alt="forest wallpaper"
       />
       <View className="w-11/12 h-5/6 bg-White absolute self-center p-6 flex-col rounded-xl">
@@ -127,6 +202,7 @@ export default function ReportPage({ navigation, route }) {
             className="w-full h-10"
             placeholder="Escreva uma breve descrição de como está o local"
             multiline
+            onChangeText={(text) => setDescription(text)}
           />
         </View>
         <View className="flex-row items-center">
@@ -144,8 +220,8 @@ export default function ReportPage({ navigation, route }) {
             color="#576032"
             uncheckedColor="#576032"
             value="empty"
-            status={checked === 'parcial' ? 'checked' : 'unchecked'}
-            onPress={() => setChecked('parcial')}
+            status={checked === 'partially_full' ? 'checked' : 'unchecked'}
+            onPress={() => setChecked('partially_full')}
           />
           <Text>Parcialmente cheio</Text>
         </View>
@@ -181,7 +257,7 @@ export default function ReportPage({ navigation, route }) {
           </TouchableOpacity>
           <TouchableOpacity
             className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg flex-row"
-            onPress={() => postImageImgur()}
+            onPress={() => report()}
           >
             <IconF name="send" size={16} color={'white'} />
             <Text
