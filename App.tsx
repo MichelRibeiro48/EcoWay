@@ -5,6 +5,7 @@ import { ClerkProvider } from '@clerk/clerk-expo'
 import * as SecureStore from 'expo-secure-store'
 import { CLERK_PUBLISHABLE_KEY } from '@env'
 import { useFonts, Fasthand_400Regular } from '@expo-google-fonts/fasthand'
+import { StatusBar } from 'expo-status-bar'
 
 const tokenCache = {
   getToken(key: string) {
@@ -39,6 +40,7 @@ export default function App() {
         <ApolloProvider client={apolloClient}>
           <Routes />
         </ApolloProvider>
+        <StatusBar translucent={true} />
       </ClerkProvider>
     </>
   )

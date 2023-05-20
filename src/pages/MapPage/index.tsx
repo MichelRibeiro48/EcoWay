@@ -21,6 +21,7 @@ import { MapPoint } from './types'
 import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 import { LocationStatus } from '../../@types/locationStatus'
 import { ActivityIndicator } from 'react-native-paper'
+import { FlashList } from '@shopify/flash-list'
 
 const mapPoint = gql`
   query PointMarker($country: String!, $latitude: Float!, $longitude: Float!) {
@@ -142,10 +143,11 @@ export default function MapPage({ navigation }) {
         })}
       </MapView>
       <View className="absolute bottom-24 h-20">
-        <FlatList
+        <FlashList
           data={data?.collectPoints}
           horizontal
           showsHorizontalScrollIndicator={false}
+          estimatedItemSize={240}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             const status: LocationStatus = data

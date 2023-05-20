@@ -84,7 +84,7 @@ export default function PostPage({ navigation, route }) {
   }
 
   return (
-    <View className="flex-1 pt-16 bg-White">
+    <View className="flex-1 pt-16 bg-White min-h-[3]">
       <TouchableOpacity onPress={() => navigation.goBack()} className="m-3">
         <IconI name="chevron-back-outline" size={32} color={'#576032'} />
       </TouchableOpacity>
