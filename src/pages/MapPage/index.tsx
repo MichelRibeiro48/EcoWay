@@ -10,7 +10,7 @@ import {
   Roboto_100Thin_Italic,
   Roboto_500Medium,
 } from '@expo-google-fonts/roboto'
-import { Text, View, Image, TouchableOpacity, FlatList } from 'react-native'
+import { Text, View, Image, TouchableOpacity } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import IconH from '@expo/vector-icons/FontAwesome5'
 import IconE from '@expo/vector-icons/Entypo'
