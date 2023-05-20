@@ -10,6 +10,10 @@
     "preview": {
       "distribution": "internal",
       "android": {
+        "env": {
+          "API_URL":"https://api-sa-east-1.hygraph.com/v2/clgsojygk1f4801ujenkd9efn/master",
+          "CLERK_PUBLISHABLE_KEY":"pk_test_YnVzeS1zdHVyZ2Vvbi05NS5jbGVyay5hY2NvdW50cy5kZXYk",
+        },
         "buildType": "apk"
       }
     },

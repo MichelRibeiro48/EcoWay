@@ -32,7 +32,7 @@ export default function LoginPage({ navigation }) {
 
   useEffect(() => {
     if (session) navigation.replace('HomePage')
-  }, [session])
+  }, [navigation, session])
 
   useEffect(() => {
     if (email.length > 0) {
