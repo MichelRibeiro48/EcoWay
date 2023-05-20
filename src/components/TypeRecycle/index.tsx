@@ -2,6 +2,7 @@ import { Text, View, Image } from 'react-native'
 import IconF5 from '@expo/vector-icons/FontAwesome5'
 import greenContainerImg from '../../assets/greenCont.png'
 import { collectTypes } from '../../pages/PointAbout/types'
+import classNames from 'classnames'
 
 const wasteTypes = {
   plastic: { name: 'Plástico', color: '#E13D3D' },
@@ -20,7 +21,12 @@ export interface TypeRecycleProps {
 
 export default function TypeRecycle({ wasteType }: TypeRecycleProps) {
   return (
-    <View className="items-center justify-center">
+    <View
+      className={classNames('items-center justify-center', {
+        'w-16': wasteType !== 'green_container',
+        'w-full': wasteType === 'green_container',
+      })}
+    >
       {wasteType === 'green_container' ? (
         <Image source={greenContainerImg} className="w-8 h-8" />
       ) : (

@@ -106,7 +106,7 @@ export default function LoginPage({ navigation }) {
   return (
     <ScrollView className="flex-1 bg-Green">
       <View className="items-center">
-        <BackgroundSvg width={'100%'} height={380} />
+        <BackgroundSvg width={'100%'} className="-mt-5" />
         <Text
           className="text-White text-7xl pt-6"
           style={{ fontFamily: 'Fasthand_400Regular' }}

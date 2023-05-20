@@ -66,6 +66,7 @@ export default function MapPage({ navigation }) {
     if (granted) {
       const currentPosition = await getCurrentPositionAsync()
       setLocation(currentPosition)
+
       if (currentPosition) {
         const currentCountry = await reverseGeocodeAsync({
           latitude: currentPosition.coords.latitude,
@@ -124,8 +125,8 @@ export default function MapPage({ navigation }) {
         initialRegion={{
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
         }}
       >
         {data?.collectPoints.map((marker, index) => {
@@ -165,7 +166,7 @@ export default function MapPage({ navigation }) {
                   })
                 }
                 className={classNames(
-                  `w-56 h-full bg-White ml-4 justify-center border-Red border-b-4 flex-row items-center rounded-xl`,
+                  ` h-full px-3 overflow-hidden bg-White mx-2 justify-center border-Red border-b-4 flex-row items-center rounded-xl`,
                   {
                     'border-Red': status === 'full',
                     'border-Yellow': status === 'partially_full',
@@ -175,7 +176,7 @@ export default function MapPage({ navigation }) {
               >
                 <Image
                   source={{ uri: item.placeImages[0].url }}
-                  className="w-12 h-12 mx-3 rounded"
+                  className="w-12 mr-3 h-12 rounded"
                 />
                 <View>
                   <Text
