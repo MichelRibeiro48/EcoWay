@@ -46,7 +46,7 @@ export default function CardLocation({
           style={{ fontFamily: 'Roboto_500Medium' }}
           className="text-sm text-Grey"
         >
-          {distance} KM restantes
+          {distance.distance.toFixed(0)} {distance.unit} restantes
         </Text>
       </View>
     </View>
