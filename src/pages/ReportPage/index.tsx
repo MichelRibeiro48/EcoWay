@@ -164,16 +164,17 @@ export default function ReportPage({ navigation, route }) {
           status={status}
           title={data.collectPoint.name}
         />
-        <View
-          className="w-full h-28 bg-White rounded-xl flex-row px-2 py-1 my-6"
-          style={[
-            Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
-          ]}
-        >
+        <View className="">
           <TextInput
-            className="w-full h-10"
+            className="w-full vertical bg-White rounded-xl px-2 py-1 my-6"
+            numberOfLines={8}
             placeholder="Escreva uma breve descrição de como está o local"
             multiline
+            style={
+              Platform.OS === 'android'
+                ? styles.AndroidShadow
+                : styles.IosShadow
+            }
             onChangeText={(text) => setDescription(text)}
           />
         </View>
