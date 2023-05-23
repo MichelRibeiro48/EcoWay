@@ -34,23 +34,17 @@ const getPosts = gql`
 export default function TipsRecyclePage({ navigation }) {
   const [page, setPage] = useState<number>(0)
   const [postsPerPage] = useState<number>(4)
-  const { data, refetch, loading } = useQuery(getPosts, {
+  const { data, refetch, loading } = useQuery<getPostsResponse>(getPosts, {
     variables: {
       first: postsPerPage,
-      perpage: page,
+      perpage: page * postsPerPage,
     },
   })
   const [newList, setNewList] = useState([])
-  console.log(newList)
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
   })
-  const handleOnEnd = () => {
-    if (data.posts) {
-      console.log('teste')
-    }
-  }
   useEffect(() => {
     if (data?.posts !== undefined) {
       setNewList((prevList) => [...prevList, ...data?.posts])
@@ -86,7 +80,7 @@ export default function TipsRecyclePage({ navigation }) {
           }
           onEndReachedThreshold={0.1}
           onEndReached={() => {
-            if (data?.posts !== undefined) {
+            if (data?.posts.length === 4) {
               setPage(page + 1)
             } else {
               console.log('chegou ao fim')
