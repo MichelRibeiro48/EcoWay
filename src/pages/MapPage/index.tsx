@@ -10,7 +10,7 @@ import {
   Roboto_100Thin_Italic,
   Roboto_500Medium,
 } from '@expo-google-fonts/roboto'
-import { Text, View, Image, TouchableOpacity } from 'react-native'
+import { Text, View, Image, TouchableOpacity, FlatList } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import IconH from '@expo/vector-icons/FontAwesome5'
 import IconE from '@expo/vector-icons/Entypo'
@@ -115,13 +115,13 @@ export default function MapPage({ navigation }) {
   }
 
   return (
-    <View>
+    <View className="min-h-[3px]">
       <MapView
         provider={PROVIDER_GOOGLE}
         ref={mapRef}
         showsUserLocation={true}
         followsUserLocation={true}
-        className="w-full h-full flex-col justify-end"
+        className="w-full h-full flex-col justify-end min-h-[3px]"
         initialRegion={{
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
@@ -143,12 +143,11 @@ export default function MapPage({ navigation }) {
           )
         })}
       </MapView>
-      <View className="absolute bottom-24 h-20">
-        <FlashList
+      <View className="absolute bottom-24 h-20 min-h-[3px]">
+        <FlatList
           data={data?.collectPoints}
           horizontal
           showsHorizontalScrollIndicator={false}
-          estimatedItemSize={240}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             const status: LocationStatus = data

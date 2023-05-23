@@ -56,6 +56,7 @@ export default function HomePage({ navigation }) {
   if (!fontsLoaded) {
     return
   }
+  console.log(data)
   return (
     <ScrollView className="bg-Green">
       <Pressable
