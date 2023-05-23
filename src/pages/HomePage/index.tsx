@@ -67,7 +67,7 @@ export default function HomePage({ navigation }) {
           className="text-White mr-2"
           style={{ fontFamily: 'Roboto_700Bold' }}
         >
-          Óla, {user?.firstName}
+          Ola, {user?.firstName}
         </Text>
         <Image
           source={{ uri: user?.profileImageUrl }}
