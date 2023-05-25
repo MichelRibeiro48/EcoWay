@@ -50,10 +50,10 @@ export default function AuthenticationPage({ navigation, route }) {
   }
   const onSubmitCode = async () => {
     try {
-      await signUp.attemptEmailAddressVerification({
+      const responseParams = await signUp.attemptEmailAddressVerification({
         code,
       })
-      await setSession(responseParams)
+      await setSession(responseParams.createdSessionId)
       navigation.navigate('HomePage')
     } catch (err) {
       console.log(err.errors[0])

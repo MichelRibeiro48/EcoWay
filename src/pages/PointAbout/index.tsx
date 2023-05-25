@@ -47,6 +47,7 @@ const statusTr = {
 const getCollectPoint = gql`
   query MyQuery($id: ID) {
     collectPoint(where: { id: $id }) {
+      id
       street
       placeCollectTypes
       collectDays {
@@ -63,7 +64,6 @@ const getCollectPoint = gql`
         locationStatusType
       }
       geoCoordinates {
-        distance(from: { latitude: 1.5, longitude: 1.5 })
         latitude
         longitude
       }
@@ -71,11 +71,12 @@ const getCollectPoint = gql`
   }
 `
 export default function PointAbout({ navigation, route }) {
-  const id = route.params
+  const { id, distance } = route.params
   const [showModal, setShowModal] = useState<boolean>()
   const { data } = useQuery<getSinglePoint>(getCollectPoint, {
-    variables: id,
+    variables: { id },
   })
+
   const status: LocationStatus = data
     ? getStatusOfOneLocation(data.collectPoint.reports)
     : 'empty'
@@ -140,7 +141,7 @@ export default function PointAbout({ navigation, route }) {
             />
             <View className="w-11/12 bg-White absolute self-center p-6 flex-col rounded-xl">
               <CardLocation
-                distance={id.distance}
+                distance={distance}
                 image={
                   { uri: data.collectPoint.placeImages[0].url } ||
                   require('../../assets/markerOff.png')
@@ -250,8 +251,8 @@ export default function PointAbout({ navigation, route }) {
                 className="mt-10 py-4 px-6 bg-Green self-center items-center justify-center rounded-lg flex-row"
                 onPress={() =>
                   navigation.navigate('ReportPage', {
-                    id,
-                    distance: id.distance,
+                    data,
+                    distance,
                   })
                 }
               >

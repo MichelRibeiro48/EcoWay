@@ -12,6 +12,7 @@ export type collectTypes =
 
 export type getSinglePoint = {
   collectPoint: {
+    id: string
     cep: string
     street: string
     placeCollectTypes: collectTypes[]
@@ -29,7 +30,6 @@ export type getSinglePoint = {
       locationStatusType: LocationStatus
     }[]
     geoCoordinates: {
-      distance: number
       latitude: number
       longitude: number
     }

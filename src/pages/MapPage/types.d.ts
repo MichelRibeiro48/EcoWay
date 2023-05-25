@@ -5,7 +5,6 @@ export interface MapPoint {
     id: string
     name: string
     geoCoordinates: {
-      distance: number
       latitude: number
       longitude: number
     }

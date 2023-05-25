@@ -3,6 +3,8 @@ import {
   getCurrentPositionAsync,
   reverseGeocodeAsync,
   LocationObject,
+  watchPositionAsync,
+  LocationAccuracy,
 } from 'expo-location'
 import React, { useEffect, useRef, useState } from 'react'
 import {
@@ -21,10 +23,10 @@ import { MapPoint } from './types'
 import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 import { LocationStatus } from '../../@types/locationStatus'
 import { ActivityIndicator } from 'react-native-paper'
-import { FlashList } from '@shopify/flash-list'
+import { getDistanceBetweenCoordinatesInKM } from '../../utils/getDistanceBetweenCoordinatesInKM'
 
 const mapPoint = gql`
-  query PointMarker($country: String!, $latitude: Float!, $longitude: Float!) {
+  query PointMarker($country: String!) {
     collectPoints(where: { state: $country }) {
       id
       name
@@ -32,7 +34,6 @@ const mapPoint = gql`
         locationStatusType
       }
       geoCoordinates {
-        distance(from: { latitude: $latitude, longitude: $longitude })
         latitude
         longitude
       }
@@ -52,8 +53,8 @@ export default function MapPage({ navigation }) {
   const initialLocation = {
     latitude: location?.coords.latitude,
     longitude: location?.coords.longitude,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
   }
 
   function goToInitialLocation() {
@@ -79,8 +80,6 @@ export default function MapPage({ navigation }) {
   const { data, loading } = useQuery<MapPoint>(mapPoint, {
     variables: {
       country,
-      latitude: location?.coords.latitude,
-      longitude: location?.coords.longitude,
     },
   })
 
@@ -88,18 +87,18 @@ export default function MapPage({ navigation }) {
     requestLocationPermission()
   }, [])
 
-  // useEffect(() => {
-  //   watchPositionAsync(
-  //     {
-  //       accuracy: LocationAccuracy.Highest,
-  //       timeInterval: 1000 * 10, // 10 secs
-  //       distanceInterval: 1,
-  //     },
-  //     (response) => {
-  //       setLocation(response)
-  //     },
-  //   )
-  // }, [])
+  useEffect(() => {
+    watchPositionAsync(
+      {
+        accuracy: LocationAccuracy.Highest,
+        timeInterval: 1000 * 10, // 10 secs
+        distanceInterval: 1,
+      },
+      (response) => {
+        setLocation(response)
+      },
+    )
+  }, [])
 
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
@@ -125,8 +124,8 @@ export default function MapPage({ navigation }) {
         initialRegion={{
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
         }}
       >
         {data?.collectPoints.map((marker, index) => {
@@ -143,7 +142,7 @@ export default function MapPage({ navigation }) {
           )
         })}
       </MapView>
-      <View className="absolute bottom-24 h-20 min-h-[3px]">
+      <View className="absolute bottom-24 h-20">
         <FlatList
           data={data?.collectPoints}
           horizontal
@@ -153,15 +152,22 @@ export default function MapPage({ navigation }) {
             const status: LocationStatus = data
               ? getStatusOfOneLocation(item.reports)
               : 'empty'
-
+            const distance = getDistanceBetweenCoordinatesInKM(
+              {
+                latitude: location?.coords.latitude,
+                longitude: location?.coords.longitude,
+              },
+              {
+                latitude: item.geoCoordinates.latitude,
+                longitude: item.geoCoordinates.longitude,
+              },
+            )
             return (
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('PointAbout', {
                     id: item.id,
-                    distance: String(
-                      (item.geoCoordinates.distance / 100).toFixed(),
-                    ).substring(0, 2),
+                    distance,
                   })
                 }
                 className={classNames(
@@ -191,10 +197,7 @@ export default function MapPage({ navigation }) {
                       className="text-Grey text-xs"
                       style={{ fontFamily: 'Roboto_500Medium' }}
                     >
-                      {String(
-                        (item.geoCoordinates.distance / 100).toFixed(),
-                      ).substring(0, 2)}
-                      KM Restantes
+                      {distance.distance.toFixed(0)} {distance.unit} Restantes
                     </Text>
                   </View>
                 </View>

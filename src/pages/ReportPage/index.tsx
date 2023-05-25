@@ -6,6 +6,9 @@ import {
   Platform,
   TouchableOpacity,
   TextInput,
+  TouchableWithoutFeedback,
+  Pressable,
+  Keyboard,
 } from 'react-native'
 import {
   useFonts,
@@ -19,34 +22,13 @@ import styles from './styles'
 import CardLocation from '../../components/CardLocation'
 import { ActivityIndicator, RadioButton } from 'react-native-paper'
 import * as ImagePicker from 'expo-image-picker'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { gql, useMutation } from '@apollo/client'
 import { getSinglePoint } from '../PointAbout/types'
 import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 import { LocationStatus } from '../../@types/locationStatus'
 import { PropsResponseImage } from './types'
 import { useAuth } from '@clerk/clerk-expo'
-
-const getCollectPoint = gql`
-  query MyQuery($id: ID) {
-    collectPoint(where: { id: $id }) {
-      id
-      street
-      placeCollectTypes
-      collectDays {
-        day
-        initialCollectTimeInMinutes
-        finalCollectTimeInMinutes
-      }
-      name
-      placeImages {
-        url
-      }
-      reports {
-        locationStatusType
-      }
-    }
-  }
-`
+import { Response } from '../../utils/getDistanceBetweenCoordinatesInKM'
 
 const CREATE_REPORT = gql`
   mutation MyMutation(
@@ -79,8 +61,8 @@ const PUBLISH_REPORT = gql`
 `
 
 export default function ReportPage({ navigation, route }) {
-  const { id, distance } = route.params
-  const { data } = useQuery<getSinglePoint>(getCollectPoint, { variables: id })
+  const data = route.params.data as getSinglePoint
+  const distance = route.params.distance as Response
   const [publishReport] = useMutation(PUBLISH_REPORT)
 
   const [createReport, { data: reportDataResponse }] = useMutation(
@@ -92,6 +74,9 @@ export default function ReportPage({ navigation, route }) {
             id: data.createReport.id,
           },
         })
+        alert('Reporte criado com sucesso!')
+
+        navigation.goBack()
       },
     },
   )
@@ -99,6 +84,7 @@ export default function ReportPage({ navigation, route }) {
   const [checked, setChecked] = useState('')
   const [imageCamera, setImageCamera] = useState(null)
   const [description, setDescription] = useState('')
+  const [loading, setLoading] = useState(false)
   const { userId } = useAuth()
 
   const status: LocationStatus = data
@@ -133,29 +119,25 @@ export default function ReportPage({ navigation, route }) {
   }
 
   const report = async () => {
-    const data = await postImageImgur()
+    setLoading(true)
+    try {
+      const imgurImage = await postImageImgur()
+      await createReport({
+        variables: {
+          description,
+          locationImageUrl: imgurImage.data.link,
+          userId,
+          locationStatusType: checked,
+          locationId: data.collectPoint.id,
+        },
+      })
 
-    console.log({
-      variables: {
-        description,
-        locationImageUrl: data.data.link,
-        locationStatusType: checked,
-        userId,
-        locationId: id.id,
-      },
-    })
-
-    await createReport({
-      variables: {
-        description,
-        locationImageUrl: data.data.link,
-        userId,
-        locationStatusType: checked,
-        locationId: id.id,
-      },
-    })
-
-    console.log(JSON.stringify('data:', reportDataResponse))
+      console.log(JSON.stringify('data:', reportDataResponse))
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const pickImage = async () => {
@@ -176,7 +158,10 @@ export default function ReportPage({ navigation, route }) {
   }
 
   return (
-    <View className="flex-1 justify-center min-h-[90vh]">
+    <Pressable
+      className="flex-1 justify-center min-h-[90vh]"
+      onPress={Keyboard.dismiss}
+    >
       <Image
         className="w-full h-full"
         source={{
@@ -196,16 +181,17 @@ export default function ReportPage({ navigation, route }) {
           status={status}
           title={data.collectPoint.name}
         />
-        <View
-          className="w-full h-28 bg-White rounded-xl flex-row px-2 py-1 my-6"
-          style={[
-            Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
-          ]}
-        >
+        <View className="">
           <TextInput
-            className="w-full h-10"
+            className="w-full vertical bg-White rounded-xl px-2 py-1 my-6"
+            numberOfLines={8}
             placeholder="Escreva uma breve descrição de como está o local"
             multiline
+            style={
+              Platform.OS === 'android'
+                ? styles.AndroidShadow
+                : styles.IosShadow
+            }
             onChangeText={(text) => setDescription(text)}
           />
         </View>
@@ -239,40 +225,48 @@ export default function ReportPage({ navigation, route }) {
           />
           <Text>Cheio</Text>
         </View>
-        <TouchableOpacity
-          className="mt-10 w-60 h-16 bg-White self-center items-center justify-center rounded-lg flex-row"
-          style={[
-            Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
-          ]}
-          onPress={pickImage}
-        >
-          <IconR name="addfile" size={24} color={'black'} />
-          <Text className="text-Black ml-1">Anexar uma foto do local</Text>
-        </TouchableOpacity>
-        {imageCamera !== null && (
-          <Text className="self-center mt-4">Foto anexada com sucesso</Text>
-        )}
-        <View className="flex-row justify-between mt-auto">
-          <TouchableOpacity
-            className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg"
-            onPress={() => navigation.goBack()}
-          >
-            <IconF name="close" size={32} color={'white'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg flex-row"
-            onPress={() => report()}
-          >
-            <IconF name="send" size={16} color={'white'} />
-            <Text
-              style={{ fontFamily: 'Roboto_700Bold' }}
-              className="text-White ml-2 text-base"
+        {loading ? (
+          <ActivityIndicator size={'large'} color="#576032" />
+        ) : (
+          <>
+            <TouchableOpacity
+              className="mt-10 w-60 h-16 bg-White self-center items-center justify-center rounded-lg flex-row"
+              style={[
+                Platform.OS === 'android'
+                  ? styles.AndroidShadow
+                  : styles.IosShadow,
+              ]}
+              onPress={pickImage}
             >
-              Enviar
-            </Text>
-          </TouchableOpacity>
-        </View>
+              <IconR name="addfile" size={24} color={'black'} />
+              <Text className="text-Black ml-1">Anexar uma foto do local</Text>
+            </TouchableOpacity>
+            {imageCamera !== null && (
+              <Text className="self-center mt-4">Foto anexada com sucesso</Text>
+            )}
+            <View className="flex-row justify-between mt-auto">
+              <TouchableOpacity
+                className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg"
+                onPress={() => navigation.goBack()}
+              >
+                <IconF name="close" size={32} color={'white'} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg flex-row"
+                onPress={() => report()}
+              >
+                <IconF name="send" size={16} color={'white'} />
+                <Text
+                  style={{ fontFamily: 'Roboto_700Bold' }}
+                  className="text-White ml-2 text-base"
+                >
+                  Enviar
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
       </View>
-    </View>
+    </Pressable>
   )
 }
