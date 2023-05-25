@@ -38,6 +38,12 @@ const days = {
   6: 'sábado',
 }
 
+const statusTr = {
+  full: 'Cheio',
+  partially_full: 'Parcialmente Cheio',
+  empty: 'Vazio',
+}
+
 const getCollectPoint = gql`
   query MyQuery($id: ID) {
     collectPoint(where: { id: $id }) {
@@ -77,10 +83,10 @@ export default function PointAbout({ navigation, route }) {
     Roboto_100Thin_Italic,
     Roboto_500Medium,
   })
-
+  console.log(status)
   const mapsURL = Platform.select({
-    ios: `maps:${data?.collectPoint.geoCoordinates.latitude},${data?.collectPoint.geoCoordinates.longitude}`,
-    android: `geo:${data?.collectPoint.geoCoordinates.latitude},${data?.collectPoint.geoCoordinates.longitude}`,
+    ios: `maps://0,0?q=${data?.collectPoint.geoCoordinates.latitude},${data?.collectPoint.geoCoordinates.longitude}`,
+    android: `geo:0,0?q=${data?.collectPoint.geoCoordinates.latitude},${data?.collectPoint.geoCoordinates.longitude}`,
   })
 
   if (!fontsLoaded) {
@@ -119,21 +125,26 @@ export default function PointAbout({ navigation, route }) {
       </ModalComponent>
       <View className="flex-1 justify-center">
         {!data?.collectPoint ? (
-          <ActivityIndicator />
+          <ActivityIndicator size={'large'} color="#576032" />
         ) : (
           <>
             <Image
               className="w-full h-full"
               blurRadius={2}
               source={{
-                uri: data.collectPoint.placeImages[0].url,
+                uri:
+                  data.collectPoint.placeImages[0].url ||
+                  'https://color-hex.org/colors/576032.png',
               }}
               alt="wallpaper"
             />
             <View className="w-11/12 bg-White absolute self-center p-6 flex-col rounded-xl">
               <CardLocation
                 distance={id.distance}
-                image={data.collectPoint.placeImages[0].url}
+                image={
+                  { uri: data.collectPoint.placeImages[0].url } ||
+                  require('../../assets/markerOff.png')
+                }
                 status={status}
                 title={data.collectPoint.name}
               />
@@ -153,7 +164,7 @@ export default function PointAbout({ navigation, route }) {
                       size={16}
                       color={STATUS_COLORS[status]}
                     />
-                    <Text className="ml-2">{status}</Text>
+                    <Text className="ml-2">{statusTr[status]}</Text>
                   </View>
                 </View>
               </View>

@@ -188,7 +188,11 @@ export default function ReportPage({ navigation, route }) {
       <View className="w-11/12 h-5/6 bg-White absolute self-center p-6 flex-col rounded-xl">
         <CardLocation
           distance={distance}
-          image={data.collectPoint.placeImages[0].url}
+          image={{
+            uri:
+              data.collectPoint.placeImages[0].url ||
+              require('../../assets/markerOff.png'),
+          }}
           status={status}
           title={data.collectPoint.name}
         />
