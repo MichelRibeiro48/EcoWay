@@ -76,6 +76,11 @@ export default function LoginPage({ navigation }) {
       setLoading(false)
       return
     }
+    if (password.length <= 0) {
+      setErrorPassword('Digite sua senha')
+      setLoading(false)
+      return
+    }
     try {
       const completeSignIn = await signIn.create({
         identifier: email,
@@ -93,6 +98,9 @@ export default function LoginPage({ navigation }) {
       }
       if (err.errors[0].message.match("Couldn't")) {
         setErrorEmail('Email não cadastrado')
+      }
+      if (err.errors[0].message.match('Invalid verification')) {
+        setErrorEmail('Faça login pelo google')
       }
     } finally {
       setLoading(false)
