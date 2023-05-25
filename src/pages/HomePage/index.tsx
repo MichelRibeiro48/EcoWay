@@ -68,7 +68,7 @@ export default function HomePage({ navigation }) {
           className="text-White mr-2"
           style={{ fontFamily: 'Roboto_700Bold' }}
         >
-          Ola, {user?.firstName || 'Usuário'}
+          Olá, {user?.firstName || 'Usuário'}
         </Text>
         {!user?.profileImageUrl && (
           <User name="user-circle-o" size={24} color={'white'} />

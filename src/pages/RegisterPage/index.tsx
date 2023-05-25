@@ -91,7 +91,7 @@ export default function RegisterPage({ navigation }) {
   return (
     <ScrollView className="flex-1 bg-Green">
       <View className="items-center">
-        <BackgroundSvg width={'100%'} height={380} />
+        <BackgroundSvg width={'100%'} height={380} className="-mt-5" />
         <Text className="self-start ml-10 mb-2 text-White">Nome</Text>
         <TextInput
           autoCapitalize="none"

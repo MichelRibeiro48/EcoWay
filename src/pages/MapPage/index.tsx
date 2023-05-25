@@ -24,6 +24,9 @@ import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 import { LocationStatus } from '../../@types/locationStatus'
 import { ActivityIndicator } from 'react-native-paper'
 import { getDistanceBetweenCoordinatesInKM } from '../../utils/getDistanceBetweenCoordinatesInKM'
+import imageEmpty from '../../assets/markerOff.png'
+import imageFull from '../../assets/markerOffFull.png'
+import imagePart from '../../assets/markerOffPart.png'
 
 const mapPoint = gql`
   query PointMarker($country: String!) {
@@ -44,6 +47,11 @@ const mapPoint = gql`
   }
 `
 
+const typeStatus = {
+  empty: imageEmpty,
+  partially_full: imagePart,
+  full: imageFull,
+}
 export default function MapPage({ navigation }) {
   const [location, setLocation] = useState<LocationObject | null>(null)
   const [country, setCountry] = useState('')
@@ -129,6 +137,9 @@ export default function MapPage({ navigation }) {
         }}
       >
         {data?.collectPoints.map((marker, index) => {
+          const status: LocationStatus = data
+            ? getStatusOfOneLocation(marker.reports)
+            : 'empty'
           return (
             <Marker
               key={index}
@@ -136,7 +147,7 @@ export default function MapPage({ navigation }) {
                 latitude: marker.geoCoordinates.latitude,
                 longitude: marker.geoCoordinates.longitude,
               }}
-              image={require('../../assets/markerOff.png')}
+              image={typeStatus[status]}
               onPress={() => navigation.navigate('PointAbout', marker)}
             />
           )
