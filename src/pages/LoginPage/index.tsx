@@ -132,11 +132,12 @@ export default function LoginPage({ navigation }) {
                 'border-Red border-2': errorEmail !== '',
               })}
               placeholder="Email"
+              keyboardType="email-address"
               placeholderTextColor="#ACB195"
               onChangeText={(email) => setEmail(email)}
             />
             {errorEmail && (
-              <Text className="self-start ml-10 text-Yellow">{errorEmail}</Text>
+              <Text className="self-start text-Yellow">{errorEmail}</Text>
             )}
             <Text className="mt-4 self-start mb-2 text-White">Senha</Text>
             <View
@@ -170,9 +171,7 @@ export default function LoginPage({ navigation }) {
               </Pressable>
             </View>
             {errorPassword && (
-              <Text className="self-start ml-10 text-Yellow">
-                {errorPassword}
-              </Text>
+              <Text className="self-start text-Yellow">{errorPassword}</Text>
             )}
             <View className="w-full h-px my-6 bg-Title" />
             <Button

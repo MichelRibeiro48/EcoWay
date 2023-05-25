@@ -17,6 +17,7 @@ import {
 } from '@expo-google-fonts/roboto'
 import LogoHomeSvg from '../../assets/logohome.svg'
 import styles from './styles'
+import User from '@expo/vector-icons/FontAwesome'
 import { PostCard } from '../../components/PostCard'
 import { useUser } from '@clerk/clerk-expo'
 import { gql, useQuery } from '@apollo/client'
@@ -67,8 +68,11 @@ export default function HomePage({ navigation }) {
           className="text-White mr-2"
           style={{ fontFamily: 'Roboto_700Bold' }}
         >
-          Ola, {user?.firstName}
+          Ola, {user?.firstName || 'Usuário'}
         </Text>
+        {!user?.profileImageUrl && (
+          <User name="user-circle-o" size={24} color={'white'} />
+        )}
         <Image
           source={{ uri: user?.profileImageUrl }}
           alt="ImgProfile"
