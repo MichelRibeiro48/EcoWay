@@ -69,6 +69,7 @@ export default function RegisterPage({ navigation }) {
         return
       }
       const response = await signUp.create({
+        firstName: name,
         emailAddress: email,
         password: psword,
       })
