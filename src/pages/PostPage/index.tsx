@@ -80,7 +80,7 @@ export default function PostPage({ navigation, route }) {
   }
 
   return (
-    <View className="flex-1 pt-16 bg-White min-h-[3]">
+    <View className="flex-1 pt-8 bg-White min-h-screen">
       {data ? (
         <>
           <TouchableOpacity onPress={() => navigation.goBack()} className="m-3">
@@ -94,11 +94,11 @@ export default function PostPage({ navigation, route }) {
           >
             <Image
               source={{ uri: post.coverImage.url }}
-              className="w-full h-60 my-9 mb-4"
+              className="w-full h-60 mb-4"
               alt=""
             />
             <View className="p-4">
-              <View className="flex-row">
+              <View className="flex-row items-center">
                 <Image
                   source={{ uri: post.author.picture.url }}
                   className="w-20 h-20 rounded-full mb-4"

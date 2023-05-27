@@ -83,7 +83,7 @@ export default function HomePage({ navigation }) {
       <View className="bg-Green">
         <LogoHomeSvg width={'100%'} height={280} />
       </View>
-      <View className="items-center py-6 px-5 bg-White rounded-t-3xl min-h-screen">
+      <View className="items-center py-6 px-5 bg-White rounded-t-3xl min-h-[80vh]">
         <TouchableOpacity
           style={[
             Platform.OS === 'android' ? { elevation: 10 } : styles.IosShadow,
@@ -123,16 +123,18 @@ export default function HomePage({ navigation }) {
             {data.posts.map((post, index) => {
               return <PostCard post={post} key={index} />
             })}
-            <TouchableOpacity
-              onPress={() => navigation.navigate('TipsRecyclePage')}
-            >
-              <Text
-                className="mb-8 text-Green text-base"
-                style={{ fontFamily: 'Roboto_500Medium' }}
+            {data.posts.length > 2 && (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('TipsRecyclePage')}
               >
-                Ver mais!
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  className="mb-8 text-Green text-base"
+                  style={{ fontFamily: 'Roboto_500Medium' }}
+                >
+                  Ver mais!
+                </Text>
+              </TouchableOpacity>
+            )}
           </>
         ) : (
           <ActivityIndicator size="large" color="#576032" />

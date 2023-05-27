@@ -140,6 +140,16 @@ export default function MapPage({ navigation }) {
           const status: LocationStatus = data
             ? getStatusOfOneLocation(marker.reports)
             : 'empty'
+          const distance = getDistanceBetweenCoordinatesInKM(
+            {
+              latitude: location?.coords.latitude,
+              longitude: location?.coords.longitude,
+            },
+            {
+              latitude: marker.geoCoordinates.latitude,
+              longitude: marker.geoCoordinates.longitude,
+            },
+          )
           return (
             <Marker
               key={index}
@@ -148,7 +158,12 @@ export default function MapPage({ navigation }) {
                 longitude: marker.geoCoordinates.longitude,
               }}
               image={typeStatus[status]}
-              onPress={() => navigation.navigate('PointAbout', marker)}
+              onPress={() =>
+                navigation.navigate('PointAbout', {
+                  id: marker.id,
+                  distance,
+                })
+              }
             />
           )
         })}

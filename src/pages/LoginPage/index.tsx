@@ -129,7 +129,7 @@ export default function LoginPage({ navigation }) {
           EcoWay
         </Text>
         {!isLoaded ? (
-          <ActivityIndicator size={'large'} color={'#81e411'} />
+          <ActivityIndicator size={'large'} color="#576032" />
         ) : (
           <View className="w-full px-5">
             <Text className="self-start mb-2 text-White">Email</Text>
