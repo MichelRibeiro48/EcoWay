@@ -148,7 +148,19 @@ export default function MapPage({ navigation }) {
                 longitude: marker.geoCoordinates.longitude,
               }}
               image={typeStatus[status]}
-              onPress={() => navigation.navigate('PointAbout', marker)}
+              onPress={() => {
+                const distance = getDistanceBetweenCoordinatesInKM(
+                  {
+                    latitude: location?.coords.latitude,
+                    longitude: location?.coords.longitude,
+                  },
+                  {
+                    latitude: marker.geoCoordinates.latitude,
+                    longitude: marker.geoCoordinates.longitude,
+                  },
+                )
+                navigation.navigate('PointAbout', { marker, distance })
+              }}
             />
           )
         })}

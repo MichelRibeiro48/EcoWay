@@ -71,14 +71,14 @@ const getCollectPoint = gql`
   }
 `
 export default function PointAbout({ navigation, route }) {
-  const { id, distance } = route.params
+  const { id, distance, marker } = route.params
   const [showModal, setShowModal] = useState<boolean>()
   const { data } = useQuery<getSinglePoint>(getCollectPoint, {
-    variables: { id },
+    variables: { id: id || marker.id },
   })
-
+  console.log(data)
   const status: LocationStatus = data
-    ? getStatusOfOneLocation(data.collectPoint.reports)
+    ? getStatusOfOneLocation(data?.collectPoint.reports)
     : 'empty'
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
