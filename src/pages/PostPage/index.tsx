@@ -79,70 +79,74 @@ export default function PostPage({ navigation, route }) {
     return
   }
 
-  if (!data) {
-    return <ActivityIndicator size="large" color="#576032" />
-  }
-
   return (
-    <View className="flex-1 pt-16 bg-White min-h-[3]">
-      <TouchableOpacity onPress={() => navigation.goBack()} className="m-3">
-        <IconI name="chevron-back-outline" size={32} color={'#576032'} />
-      </TouchableOpacity>
-      <ScrollView
-        className="flex-1"
-        refreshControl={
-          <RefreshControl onRefresh={refetch} refreshing={loading} />
-        }
-      >
-        <Image
-          source={{ uri: post.coverImage.url }}
-          className="w-full h-60 my-9 mb-4"
-          alt=""
-        />
-        <View className="p-4">
-          <View className="flex-row">
+    <View className="flex-1 pt-8 bg-White min-h-screen">
+      {data ? (
+        <>
+          <TouchableOpacity onPress={() => navigation.goBack()} className="m-3">
+            <IconI name="chevron-back-outline" size={32} color={'#576032'} />
+          </TouchableOpacity>
+          <ScrollView
+            className="flex-1"
+            refreshControl={
+              <RefreshControl onRefresh={refetch} refreshing={loading} />
+            }
+          >
             <Image
-              source={{ uri: post.author.picture.url }}
-              className="w-20 h-20 rounded-full mb-4"
+              source={{ uri: post.coverImage.url }}
+              className="w-full h-60 mb-4"
               alt=""
             />
-            <View className="justify-center ml-2">
+            <View className="p-4">
+              <View className="flex-row items-center">
+                <Image
+                  source={{ uri: post.author.picture.url }}
+                  className="w-20 h-20 rounded-full mb-4"
+                  alt=""
+                />
+                <View className="justify-center ml-2">
+                  <Text
+                    className="text-lg font-bold"
+                    style={{ fontFamily: 'Roboto_400Regular' }}
+                  >
+                    Por {post.author.name}
+                  </Text>
+                  <Text
+                    className="text-base text-Grey"
+                    style={{ fontFamily: 'Roboto_400Regular' }}
+                  >
+                    {publishedAt.format('DD/MM/YYYY[ às ]HH:mm[h]')}
+                  </Text>
+                </View>
+              </View>
               <Text
-                className="text-lg font-bold"
-                style={{ fontFamily: 'Roboto_400Regular' }}
+                className="text-2xl mb-6"
+                style={{ fontFamily: 'Roboto_500Medium' }}
               >
-                Por {post.author.name}
+                {post.title}
               </Text>
-              <Text
-                className="text-base text-Grey"
-                style={{ fontFamily: 'Roboto_400Regular' }}
-              >
-                {publishedAt.format('DD/MM/YYYY[ às ]HH:mm[h]')}
-              </Text>
+              <Markdown
+                value={post.content.markdown}
+                flatListProps={{ style: { backgroundColor: 'transparent' } }}
+                styles={{}}
+                theme={{
+                  colors: {
+                    border: 'transparent',
+                    background: '',
+                    code: '',
+                    link: '',
+                    text: '',
+                  },
+                }}
+              />
             </View>
-          </View>
-          <Text
-            className="text-2xl mb-6"
-            style={{ fontFamily: 'Roboto_500Medium' }}
-          >
-            {post.title}
-          </Text>
-          <Markdown
-            value={post.content.markdown}
-            flatListProps={{ style: { backgroundColor: 'transparent' } }}
-            styles={{}}
-            theme={{
-              colors: {
-                border: 'transparent',
-                background: '',
-                code: '',
-                link: '',
-                text: '',
-              },
-            }}
-          />
+          </ScrollView>
+        </>
+      ) : (
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size={'large'} color="#576032" />
         </View>
-      </ScrollView>
+      )}
     </View>
   )
 }

@@ -24,7 +24,7 @@ export default function ModalLogout({ visible, closeModal }: ModalLogoutProps) {
           className="w-16 h-16 rounded-full mb-[10]"
           alt="user image"
         />
-        <Text className="mb-7">{user?.fullName}</Text>
+        <Text className="mb-7">{user?.fullName || 'Usuário'}</Text>
         <Button
           displayName="Sair"
           greenMode={true}

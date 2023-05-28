@@ -6,6 +6,8 @@ import {
   Platform,
   TouchableOpacity,
   TextInput,
+  Pressable,
+  Keyboard,
 } from 'react-native'
 import {
   useFonts,
@@ -81,6 +83,7 @@ export default function ReportPage({ navigation, route }) {
   const [checked, setChecked] = useState('')
   const [imageCamera, setImageCamera] = useState(null)
   const [description, setDescription] = useState('')
+  const [loading, setLoading] = useState(false)
   const { userId } = useAuth()
 
   const status: LocationStatus = data
@@ -115,19 +118,25 @@ export default function ReportPage({ navigation, route }) {
   }
 
   const report = async () => {
-    const imgurImage = await postImageImgur()
+    setLoading(true)
+    try {
+      const imgurImage = await postImageImgur()
+      await createReport({
+        variables: {
+          description,
+          locationImageUrl: imgurImage.data.link,
+          userId,
+          locationStatusType: checked,
+          locationId: data.collectPoint.id,
+        },
+      })
 
-    await createReport({
-      variables: {
-        description,
-        locationImageUrl: imgurImage.data.link,
-        userId,
-        locationStatusType: checked,
-        locationId: data.collectPoint.id,
-      },
-    })
-
-    console.log(JSON.stringify('data:', reportDataResponse))
+      console.log(JSON.stringify('data:', reportDataResponse))
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const pickImage = async () => {
@@ -148,7 +157,10 @@ export default function ReportPage({ navigation, route }) {
   }
 
   return (
-    <View className="flex-1 justify-center min-h-[90vh]">
+    <Pressable
+      className="flex-1 justify-center min-h-[90vh]"
+      onPress={Keyboard.dismiss}
+    >
       <Image
         className="w-full h-full"
         source={{
@@ -160,20 +172,25 @@ export default function ReportPage({ navigation, route }) {
       <View className="w-11/12 h-5/6 bg-White absolute self-center p-6 flex-col rounded-xl">
         <CardLocation
           distance={distance}
-          image={data.collectPoint.placeImages[0].url}
+          image={{
+            uri:
+              data.collectPoint.placeImages[0].url ||
+              require('../../assets/markerOff.png'),
+          }}
           status={status}
           title={data.collectPoint.name}
         />
-        <View
-          className="w-full h-28 bg-White rounded-xl flex-row px-2 py-1 my-6"
-          style={[
-            Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
-          ]}
-        >
+        <View className="">
           <TextInput
-            className="w-full h-10"
+            className="w-full vertical bg-White rounded-xl px-2 py-1 my-6"
+            numberOfLines={8}
             placeholder="Escreva uma breve descrição de como está o local"
             multiline
+            style={
+              Platform.OS === 'android'
+                ? styles.AndroidShadow
+                : styles.IosShadow
+            }
             onChangeText={(text) => setDescription(text)}
           />
         </View>
@@ -207,40 +224,48 @@ export default function ReportPage({ navigation, route }) {
           />
           <Text>Cheio</Text>
         </View>
-        <TouchableOpacity
-          className="mt-10 w-60 h-16 bg-White self-center items-center justify-center rounded-lg flex-row"
-          style={[
-            Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow,
-          ]}
-          onPress={pickImage}
-        >
-          <IconR name="addfile" size={24} color={'black'} />
-          <Text className="text-Black ml-1">Anexar uma foto do local</Text>
-        </TouchableOpacity>
-        {imageCamera !== null && (
-          <Text className="self-center mt-4">Foto anexada com sucesso</Text>
-        )}
-        <View className="flex-row justify-between mt-auto">
-          <TouchableOpacity
-            className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg"
-            onPress={() => navigation.goBack()}
-          >
-            <IconF name="close" size={32} color={'white'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg flex-row"
-            onPress={() => report()}
-          >
-            <IconF name="send" size={16} color={'white'} />
-            <Text
-              style={{ fontFamily: 'Roboto_700Bold' }}
-              className="text-White ml-2 text-base"
+        {loading ? (
+          <ActivityIndicator size={'large'} color="#576032" />
+        ) : (
+          <>
+            <TouchableOpacity
+              className="mt-10 w-60 h-16 bg-White self-center items-center justify-center rounded-lg flex-row"
+              style={[
+                Platform.OS === 'android'
+                  ? styles.AndroidShadow
+                  : styles.IosShadow,
+              ]}
+              onPress={pickImage}
             >
-              Enviar
-            </Text>
-          </TouchableOpacity>
-        </View>
+              <IconR name="addfile" size={24} color={'black'} />
+              <Text className="text-Black ml-1">Anexar uma foto do local</Text>
+            </TouchableOpacity>
+            {imageCamera !== null && (
+              <Text className="self-center mt-4">Foto anexada com sucesso</Text>
+            )}
+            <View className="flex-row justify-between mt-auto">
+              <TouchableOpacity
+                className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg"
+                onPress={() => navigation.goBack()}
+              >
+                <IconF name="close" size={32} color={'white'} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="w-28 h-12 bg-Green self-center items-center justify-center rounded-lg flex-row"
+                onPress={() => report()}
+              >
+                <IconF name="send" size={16} color={'white'} />
+                <Text
+                  style={{ fontFamily: 'Roboto_700Bold' }}
+                  className="text-White ml-2 text-base"
+                >
+                  Enviar
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
       </View>
-    </View>
+    </Pressable>
   )
 }

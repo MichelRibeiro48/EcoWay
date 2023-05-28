@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -17,9 +17,9 @@ import { gql, useQuery } from '@apollo/client'
 import { getPostsResponse } from '../HomePage'
 import { ActivityIndicator } from 'react-native-paper'
 
-const getPosts = (first: number, skip: number) => gql`
-  query PostsPagination {
-    posts(first: ${first}, skip: ${skip}, orderBy: publishedAt_DESC) {
+const getPosts = gql`
+  query PostsPagination($first: Int, $perpage: Int) {
+    posts(first: $first, skip: $perpage, orderBy: publishedAt_DESC) {
       id
       excerpt
       title
@@ -32,22 +32,27 @@ const getPosts = (first: number, skip: number) => gql`
 `
 
 export default function TipsRecyclePage({ navigation }) {
-  const [page] = useState<number>(0)
+  const [page, setPage] = useState<number>(0)
   const [postsPerPage] = useState<number>(4)
-
-  const { data, refetch, loading } = useQuery<getPostsResponse>(
-    getPosts(postsPerPage, page * postsPerPage),
-  )
-
+  const { data, refetch, loading } = useQuery<getPostsResponse>(getPosts, {
+    variables: {
+      first: postsPerPage,
+      perpage: page * postsPerPage,
+    },
+  })
+  const [newList, setNewList] = useState([])
   const [fontsLoaded] = useFonts({
     Roboto_100Thin_Italic,
     Roboto_500Medium,
   })
-
+  useEffect(() => {
+    if (data?.posts !== undefined) {
+      setNewList((prevList) => [...prevList, ...data?.posts])
+    }
+  }, [data?.posts])
   if (!fontsLoaded) {
     return
   }
-
   return (
     <View className="flex-1 items-center justify-center pt-16 bg-White rounded">
       <View className="flex-row self-start px-5">
@@ -63,15 +68,24 @@ export default function TipsRecyclePage({ navigation }) {
           Dicas de Reciclagem
         </Text>
       </View>
-      {data && data.posts ? (
+      {newList ? (
         <FlatList
-          data={data.posts}
+          data={newList}
           showsVerticalScrollIndicator={false}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => <PostCard post={item} />}
           className="px-5"
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={refetch} />
           }
+          onEndReachedThreshold={0.1}
+          onEndReached={() => {
+            if (data?.posts.length === 4) {
+              setPage(page + 1)
+            } else {
+              console.log('chegou ao fim')
+            }
+          }}
         />
       ) : (
         <ActivityIndicator size="large" color="#576032" className="my-auto" />

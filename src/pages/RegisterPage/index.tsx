@@ -12,6 +12,7 @@ import { useSignUp } from '@clerk/clerk-expo'
 import BackgroundSvg from '../../assets/background.svg'
 import styles from '../PointAbout/styles'
 import classNames from 'classnames'
+import IconE from '@expo/vector-icons/Entypo'
 
 export default function RegisterPage({ navigation }) {
   const { signUp, isLoaded } = useSignUp()
@@ -19,7 +20,9 @@ export default function RegisterPage({ navigation }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [psword, setPsword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [ConfirmPassword, setConfirmPassword] = useState('')
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState('')
   const [errorName, setErrorName] = useState('')
   const [errorEmail, setErrorEmail] = useState('')
@@ -49,8 +52,7 @@ export default function RegisterPage({ navigation }) {
     }
     if (psword !== ConfirmPassword) {
       setError('Senha precisa ser iguais')
-    }
-    if (psword.length === 0) {
+    } else if (psword.length === 0) {
       setError('Digite uma senha')
     }
     if (email.length <= 0) {
@@ -69,6 +71,7 @@ export default function RegisterPage({ navigation }) {
         return
       }
       const response = await signUp.create({
+        firstName: name,
         emailAddress: email,
         password: psword,
       })
@@ -80,12 +83,15 @@ export default function RegisterPage({ navigation }) {
       if (err.errors[0].message.match('Enter email')) {
         setErrorEmail('Digite seu email')
       }
+      if (err.errors[0].message.match('That email address is taken.')) {
+        setErrorEmail('Email já cadastrado')
+      }
     }
   }
   return (
     <ScrollView className="flex-1 bg-Green">
       <View className="items-center">
-        <BackgroundSvg width={'100%'} height={380} />
+        <BackgroundSvg width={'100%'} height={380} className="-mt-5" />
         <Text className="self-start ml-10 mb-2 text-White">Nome</Text>
         <TextInput
           autoCapitalize="none"
@@ -106,6 +112,7 @@ export default function RegisterPage({ navigation }) {
         <TextInput
           autoCapitalize="none"
           value={email}
+          keyboardType="email-address"
           className={classNames(`w-10/12 h-12 rounded-xl bg-Title px-2`, {
             'border-2 border-Red': errorEmail !== '',
           })}
@@ -117,32 +124,71 @@ export default function RegisterPage({ navigation }) {
           <Text className="self-start ml-10 text-Yellow">{errorEmail}</Text>
         )}
         <Text className="mt-4 self-start ml-10 mb-2 text-White">Senha</Text>
-        <TextInput
-          autoCapitalize="none"
-          value={psword}
-          className={classNames(`w-10/12 h-12 rounded-xl bg-Title px-2`, {
-            'border-2 border-Red': error !== '',
-          })}
-          placeholder="Senha"
-          secureTextEntry={true}
-          placeholderTextColor="#ACB195"
-          onChangeText={(psword) => setPsword(psword)}
-        />
+        <View
+          className={classNames(
+            `w-10/12 h-12 rounded-xl bg-Title px-2 flex-row justify-between`,
+            {
+              'border-2 border-Red': error !== '',
+            },
+          )}
+          style={{ position: 'relative' }}
+        >
+          <TextInput
+            autoCapitalize="none"
+            value={psword}
+            className="w-full"
+            secureTextEntry={!showPassword}
+            placeholder="Senha"
+            placeholderTextColor="#ACB195"
+            onChangeText={(password) => setPsword(password)}
+          />
+          <Pressable
+            className="self-center"
+            onPress={() => setShowPassword(!showPassword)}
+            style={{ position: 'absolute', right: 16 }}
+          >
+            <IconE
+              name={!showPassword ? 'eye' : 'eye-with-line'}
+              color={'#576032'}
+              size={24}
+            />
+          </Pressable>
+        </View>
         {error && <Text className="self-start ml-10 text-Yellow">{error}</Text>}
         <Text className="mt-4 self-start ml-10 mb-2 text-White">
           Confirmar senha
         </Text>
-        <TextInput
-          autoCapitalize="none"
-          value={ConfirmPassword}
-          className="w-10/12 h-12 rounded-xl bg-Title px-2"
-          placeholder="Senha"
-          secureTextEntry={true}
-          placeholderTextColor="#ACB195"
-          onChangeText={(ConfirmPassword) =>
-            setConfirmPassword(ConfirmPassword)
-          }
-        />
+        <View
+          className={classNames(
+            `w-10/12 h-12 rounded-xl bg-Title px-2 flex-row justify-between`,
+            {
+              'border-2 border-Red': error !== '',
+            },
+          )}
+          style={{ position: 'relative' }}
+        >
+          <TextInput
+            autoCapitalize="none"
+            value={ConfirmPassword}
+            className="w-full"
+            secureTextEntry={!showConfirmPassword}
+            placeholder="Senha"
+            placeholderTextColor="#ACB195"
+            onChangeText={(password) => setConfirmPassword(password)}
+          />
+          <Pressable
+            className="self-center"
+            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+            style={{ position: 'absolute', right: 16 }}
+          >
+            <IconE
+              name={!showConfirmPassword ? 'eye' : 'eye-with-line'}
+              color={'#576032'}
+              size={24}
+            />
+          </Pressable>
+        </View>
+        {error && <Text className="self-start ml-10 text-Yellow">{error}</Text>}
         <Pressable className="mt-6">
           <Text
             className=" text-White"

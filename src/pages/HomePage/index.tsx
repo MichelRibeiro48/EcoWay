@@ -17,6 +17,7 @@ import {
 } from '@expo-google-fonts/roboto'
 import LogoHomeSvg from '../../assets/logohome.svg'
 import styles from './styles'
+import User from '@expo/vector-icons/FontAwesome'
 import { PostCard } from '../../components/PostCard'
 import { useUser } from '@clerk/clerk-expo'
 import { gql, useQuery } from '@apollo/client'
@@ -56,6 +57,7 @@ export default function HomePage({ navigation }) {
   if (!fontsLoaded) {
     return
   }
+  console.log(data)
   return (
     <ScrollView className="bg-Green">
       <Pressable
@@ -66,8 +68,11 @@ export default function HomePage({ navigation }) {
           className="text-White mr-2"
           style={{ fontFamily: 'Roboto_700Bold' }}
         >
-          Óla, {user?.firstName}
+          Olá, {user?.firstName || 'Usuário'}
         </Text>
+        {!user?.profileImageUrl && (
+          <User name="user-circle-o" size={24} color={'white'} />
+        )}
         <Image
           source={{ uri: user?.profileImageUrl }}
           alt="ImgProfile"
@@ -78,7 +83,7 @@ export default function HomePage({ navigation }) {
       <View className="bg-Green">
         <LogoHomeSvg width={'100%'} height={280} />
       </View>
-      <View className="items-center py-6 px-5 bg-White rounded-t-3xl min-h-screen">
+      <View className="items-center py-6 px-5 bg-White rounded-t-3xl min-h-[80vh]">
         <TouchableOpacity
           style={[
             Platform.OS === 'android' ? { elevation: 10 } : styles.IosShadow,
@@ -118,16 +123,18 @@ export default function HomePage({ navigation }) {
             {data.posts.map((post, index) => {
               return <PostCard post={post} key={index} />
             })}
-            <TouchableOpacity
-              onPress={() => navigation.navigate('TipsRecyclePage')}
-            >
-              <Text
-                className="mb-8 text-Green text-base"
-                style={{ fontFamily: 'Roboto_500Medium' }}
+            {data.posts.length > 2 && (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('TipsRecyclePage')}
               >
-                Ver mais!
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  className="mb-8 text-Green text-base"
+                  style={{ fontFamily: 'Roboto_500Medium' }}
+                >
+                  Ver mais!
+                </Text>
+              </TouchableOpacity>
+            )}
           </>
         ) : (
           <ActivityIndicator size="large" color="#576032" />

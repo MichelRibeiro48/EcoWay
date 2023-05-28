@@ -50,10 +50,10 @@ export default function AuthenticationPage({ navigation, route }) {
   }
   const onSubmitCode = async () => {
     try {
-      await signUp.attemptEmailAddressVerification({
+      const responseParams = await signUp.attemptEmailAddressVerification({
         code,
       })
-      await setSession(responseParams)
+      await setSession(responseParams.createdSessionId)
       navigation.navigate('HomePage')
     } catch (err) {
       console.log(err.errors[0])
@@ -78,8 +78,10 @@ export default function AuthenticationPage({ navigation, route }) {
   return (
     <View className="flex-1 items-center bg-Green">
       <BackgroundSvg width={'100%'} height={380} />
-      <Text>Voce esta quase la!</Text>
-      <Text>Digite o codigo que enviamos para o email {email}</Text>
+      <Text className="text-White">Voce esta quase la!</Text>
+      <Text className="text-White">
+        Digite o codigo que enviamos para o email {email}
+      </Text>
       <Text className="self-start ml-10 mt-10 text-White">Código</Text>
       <TextInput
         autoCapitalize="none"

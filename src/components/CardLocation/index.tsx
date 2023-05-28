@@ -23,11 +23,7 @@ export default function CardLocation({
         Platform.OS === 'android' ? styles.AndroidShadow : styles.IosShadow
       }
     >
-      <Image
-        source={{ uri: image }}
-        className="w-16 h-16 mr-2 rounded-lg"
-        alt=""
-      />
+      <Image source={image} className="w-16 h-16 mr-2 rounded-lg" alt="" />
       <View className="flex-col ml-2">
         <Text
           style={{
@@ -35,7 +31,7 @@ export default function CardLocation({
           }}
           className={classNames(`text-xl`, {
             'max-w-full': title.length < 20,
-            'max-w-[95%]': title.length >= 20,
+            'max-w-[91%]': title.length >= 20,
           })}
           ellipsizeMode="tail"
           numberOfLines={1}

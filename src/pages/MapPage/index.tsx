@@ -24,6 +24,9 @@ import { getStatusOfOneLocation } from '../../utils/getLocationStatus'
 import { LocationStatus } from '../../@types/locationStatus'
 import { ActivityIndicator } from 'react-native-paper'
 import { getDistanceBetweenCoordinatesInKM } from '../../utils/getDistanceBetweenCoordinatesInKM'
+import imageEmpty from '../../assets/markerOff.png'
+import imageFull from '../../assets/markerOffFull.png'
+import imagePart from '../../assets/markerOffPart.png'
 
 const mapPoint = gql`
   query PointMarker($country: String!) {
@@ -44,6 +47,11 @@ const mapPoint = gql`
   }
 `
 
+const typeStatus = {
+  empty: imageEmpty,
+  partially_full: imagePart,
+  full: imageFull,
+}
 export default function MapPage({ navigation }) {
   const [location, setLocation] = useState<LocationObject | null>(null)
   const [country, setCountry] = useState('')
@@ -114,13 +122,13 @@ export default function MapPage({ navigation }) {
   }
 
   return (
-    <View>
+    <View className="min-h-[3px]">
       <MapView
         provider={PROVIDER_GOOGLE}
         ref={mapRef}
         showsUserLocation={true}
         followsUserLocation={true}
-        className="w-full h-full flex-col justify-end"
+        className="w-full h-full flex-col justify-end min-h-[3px]"
         initialRegion={{
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
@@ -129,6 +137,19 @@ export default function MapPage({ navigation }) {
         }}
       >
         {data?.collectPoints.map((marker, index) => {
+          const status: LocationStatus = data
+            ? getStatusOfOneLocation(marker.reports)
+            : 'empty'
+          const distance = getDistanceBetweenCoordinatesInKM(
+            {
+              latitude: location?.coords.latitude,
+              longitude: location?.coords.longitude,
+            },
+            {
+              latitude: marker.geoCoordinates.latitude,
+              longitude: marker.geoCoordinates.longitude,
+            },
+          )
           return (
             <Marker
               key={index}
@@ -136,8 +157,13 @@ export default function MapPage({ navigation }) {
                 latitude: marker.geoCoordinates.latitude,
                 longitude: marker.geoCoordinates.longitude,
               }}
-              image={require('../../assets/markerOff.png')}
-              onPress={() => navigation.navigate('PointAbout', marker)}
+              image={typeStatus[status]}
+              onPress={() =>
+                navigation.navigate('PointAbout', {
+                  id: marker.id,
+                  distance,
+                })
+              }
             />
           )
         })}
@@ -162,7 +188,6 @@ export default function MapPage({ navigation }) {
                 longitude: item.geoCoordinates.longitude,
               },
             )
-
             return (
               <TouchableOpacity
                 onPress={() =>
