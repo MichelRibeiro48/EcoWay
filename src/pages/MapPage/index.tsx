@@ -81,7 +81,11 @@ export default function MapPage({ navigation }) {
           latitude: currentPosition.coords.latitude,
           longitude: currentPosition.coords.longitude,
         })
-        setCountry(currentCountry[0].region.toLowerCase())
+        if (currentCountry[0].region.toLowerCase() === 'pa') {
+          setCountry('pará')
+        } else {
+          setCountry(currentCountry[0].region.toLowerCase())
+        }
       }
     }
   }
@@ -104,7 +108,7 @@ export default function MapPage({ navigation }) {
       },
       (response) => {
         setLocation(response)
-      },
+      }
     )
   }, [])
 
@@ -157,7 +161,7 @@ export default function MapPage({ navigation }) {
                   {
                     latitude: marker.geoCoordinates.latitude,
                     longitude: marker.geoCoordinates.longitude,
-                  },
+                  }
                 )
                 navigation.navigate('PointAbout', { marker, distance })
               }}
@@ -183,7 +187,7 @@ export default function MapPage({ navigation }) {
               {
                 latitude: item.geoCoordinates.latitude,
                 longitude: item.geoCoordinates.longitude,
-              },
+              }
             )
             return (
               <TouchableOpacity
@@ -199,7 +203,7 @@ export default function MapPage({ navigation }) {
                     'border-Red': status === 'full',
                     'border-Yellow': status === 'partially_full',
                     'border-LightGreen': status === 'empty',
-                  },
+                  }
                 )}
               >
                 <Image
